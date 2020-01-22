@@ -60,7 +60,10 @@ func initDB(db *sql.DB) {
 
 func insertSongs(db *sql.DB) {
 	stmt, _ := db.Prepare("INSERT INTO songs (title, duration, genre, author, album) VALUES (?, ?, ?, ?, ?)")
-	stmt.Exec("Some Title", 3.483, "Jazz", "Viky is Kinky", "Void Functions")
+	stmt.Exec("Another One Bites the Dust", 3.7, "Classic Rock", "Queen", "The Game")
+	stmt.Exec("Don't Stop Me Now", 3.617, "Classic Rock", "Queen", "Jazz")
+	stmt.Exec("I Want To Break Free", 4.517, "Classic Rock", "Queen", "The Works")
+	stmt.Exec("Somebody To Love", 5.15, "Rock", "Queen", "A Day at the Races")
 }
 
 
