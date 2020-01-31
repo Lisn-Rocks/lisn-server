@@ -13,6 +13,7 @@ import (
     "github.com/sharpvik/Lisn/apps/index"
     "github.com/sharpvik/Lisn/apps/song"
     "github.com/sharpvik/Lisn/apps/favicon"
+    "github.com/sharpvik/Lisn/apps/public"
 )
 
 
@@ -46,8 +47,9 @@ func main() {
     }
 
 
+    // mux is not used as there are no apps that use simple URL patterns.
+    // However, it may be useful in the future, so we keep it here.
     mux = http.NewServeMux()
-    mux.HandleFunc("/favicon", favicon.Serve)
 
 
     logr.Printf("Serving at localhost%s", config.Port)
@@ -61,7 +63,7 @@ type mainHandler struct {}
 // ServeHTTP function is the entry point for server's routing mechanisms.
 // It is used to delegate request to a proper handler function.
 func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    url := r.URL.String()
+    url := stripParams( r.URL.String() )
     logr.Printf("URL: %s", url)
 
     var app string
@@ -86,6 +88,9 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     case "song":
         song.ServeByID(w, r, db, logr)
 
+    case "public":
+        public.ServeFile(w, r, logr)
+
     default:
         mux.ServeHTTP(w, r)
     }
@@ -104,4 +109,15 @@ func insertSongs(db *sql.DB) {
     stmt.Exec("Don't Stop Me Now", 217, "Classic Rock", "Queen", "Jazz")
     stmt.Exec("I Want To Break Free", 271, "Classic Rock", "Queen", "The Works")
     stmt.Exec("Somebody To Love", 309, "Rock", "Queen", "A Day at the Races")
+}
+
+
+func stripParams(url string) string {
+    questionmarkIndex := strings.IndexByte(url, '?')
+
+    if questionmarkIndex != -1 {
+        return url[:questionmarkIndex]
+    }
+
+    return url
 }

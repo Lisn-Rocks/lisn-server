@@ -39,8 +39,10 @@ var (
     // StoreFolder contains all songs that we stream.
     StoreFolder = path.Join(RootFolder, "store")
 
-    // StaticFolder contains static files that are to be served.
-    StaticFolder = path.Join(RootFolder, "static")
+    // PublicFolder contains static files that are to be served publically.
+    // These files do not contain any sensitive data and thus we don't really
+    // care if they can be accessed arbitrarily without any identity checkup.
+    PublicFolder = path.Join(RootFolder, "public")
 )
 
 
