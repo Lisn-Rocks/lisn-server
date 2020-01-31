@@ -1,0 +1,27 @@
+<!--
+    This file is not used for now. This is just a note to myself on how to play
+    songs that are served from a remote server using JavaScript.
+-->
+
+<button onclick="play('http://localhost:8000/id/1')">Play!</button>
+<button onclick="stop()">Stop!</button>
+
+<script>
+var currentSong;
+
+async function play(url) {
+    currentSong = new Audio(url);  
+    currentSong.type = 'audio/mp3';
+
+    try {
+        await currentSong.play();
+        console.log('Playing...');
+    } catch (err) {
+        console.log('Failed to play...' + error);
+    }
+}
+
+function stop() {
+    currentSong.pause();
+}
+</script>

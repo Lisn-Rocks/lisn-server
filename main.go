@@ -5,12 +5,14 @@ import (
     "os"
     "net/http"
     "log"
-    "fmt"
+    "strings"
 
     _ "github.com/mattn/go-sqlite3"
 
-    "github.com/sharpvik/lisn-backend/config"
-    "github.com/sharpvik/lisn-backend/apps/index"
+    "github.com/sharpvik/Lisn/config"
+    "github.com/sharpvik/Lisn/apps/index"
+    "github.com/sharpvik/Lisn/apps/song"
+    "github.com/sharpvik/Lisn/apps/favicon"
 )
 
 
@@ -24,9 +26,11 @@ var db *sql.DB
 
 
 func main() {
-    db, _ = sql.Open("sqlite3", "./songs.db")
+    initRequired := config.InitRequired()
 
-    if config.InitRequired {
+    db, _ = sql.Open("sqlite3", config.DatabaseFile)
+
+    if initRequired {
         initDB(db)
         insertSongs(db)
     }
@@ -36,14 +40,14 @@ func main() {
 
 
     server := http.Server{
-        Addr:        config.Port,
+        Addr:       config.Port,
         Handler:    &mainHandler{},
-        ErrorLog:    logr,
+        ErrorLog:   logr,
     }
 
 
     mux = http.NewServeMux()
-    mux.HandleFunc("/id", serveSongByID)
+    mux.HandleFunc("/favicon", favicon.Serve)
 
 
     logr.Printf("Serving at localhost%s", config.Port)
@@ -55,13 +59,32 @@ func main() {
 type mainHandler struct {}
 
 // ServeHTTP function is the entry point for server's routing mechanisms.
-// It uses mux to delegate request to a proper handler function.
+// It is used to delegate request to a proper handler function.
 func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    logr.Printf( "URL: %s", r.URL.String() )
+    url := r.URL.String()
+    logr.Printf("URL: %s", url)
 
-    switch r.URL.String() {
-    case "/":
+    var app string
+
+    if url == "/" {
+        app = "index"
+
+    } else {
+        split := strings.Split(url, "/")[1:]
+    
+        // First string in the split must name the app for which this request is
+        // being made. That helps keep app routing at O(1).
+        app = split[0]
+    }
+
+    logr.Printf("App: %s", app)
+
+    switch app {
+    case "index":
         index.Serve(w, r, db)
+
+    case "song":
+        song.ServeByID(w, r, db, logr)
 
     default:
         mux.ServeHTTP(w, r)
@@ -70,23 +93,15 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 
 
-func serveSongByID(w http.ResponseWriter, r *http.Request) {
-    id := "1" // in production id must be read from request body (type string)
-    path := fmt.Sprintf("store/%s.mp3", id)
-    http.ServeFile(w, r, path)
-}
-
-
-
 func initDB(db *sql.DB) {
-    stmt, _ := db.Prepare("CREATE TABLE IF NOT EXISTS songs (id INTEGER PRIMARY KEY, title TEXT, duration FLOAT, genre TEXT, author TEXT, album TEXT NULL)")
+    stmt, _ := db.Prepare("CREATE TABLE IF NOT EXISTS songs (id INTEGER PRIMARY KEY, title TEXT, duration INTEGER, genre TEXT, artist TEXT, album TEXT NULL)")
     stmt.Exec()
 }
 
 func insertSongs(db *sql.DB) {
-    stmt, _ := db.Prepare("INSERT INTO songs (title, duration, genre, author, album) VALUES (?, ?, ?, ?, ?)")
-    stmt.Exec("Another One Bites the Dust", 3.7, "Classic Rock", "Queen", "The Game")
-    stmt.Exec("Don't Stop Me Now", 3.617, "Classic Rock", "Queen", "Jazz")
-    stmt.Exec("I Want To Break Free", 4.517, "Classic Rock", "Queen", "The Works")
-    stmt.Exec("Somebody To Love", 5.15, "Rock", "Queen", "A Day at the Races")
+    stmt, _ := db.Prepare("INSERT INTO songs (title, duration, genre, artist, album) VALUES (?, ?, ?, ?, ?)")
+    stmt.Exec("Another One Bites the Dust", 222, "Classic Rock", "Queen", "The Game")
+    stmt.Exec("Don't Stop Me Now", 217, "Classic Rock", "Queen", "Jazz")
+    stmt.Exec("I Want To Break Free", 271, "Classic Rock", "Queen", "The Works")
+    stmt.Exec("Somebody To Love", 309, "Rock", "Queen", "A Day at the Races")
 }

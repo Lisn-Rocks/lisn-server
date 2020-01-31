@@ -1,14 +1,14 @@
 package config
 
-import "path"
+import (
+    "path"
+    "os"
+)
 
 
 // These are project-level constants used by various packages. They serve to
 // improve code scalability and ease of deployment.
 const (
-    // InitRequired specifies whether the song database requeres initialization.
-    InitRequired = false
-
     // Port specifies server port.
     Port = ":8000"
 
@@ -16,14 +16,17 @@ const (
     // useful for the app called static that requires information about absolute
     // paths of different files on the system.
     //
-    // Make sure to change it before running the server on your machine!
-    RootFolder = "/home/vr4n18/go/src/github.com/sharpvik/lisn-backend"
+    // MAKE SURE TO CHANGE IT BEFORE RUNNING THE SERVER ON YOUR MACHINE!
+    RootFolder = "/home/sharpvik/go/src/github.com/sharpvik/Lisn"
 )
 
 
 // These are declared as var because their values are computed based on the
 // constants above.
 var (
+    // DatabaseFile contains path to the main songs databse.
+    DatabaseFile = path.Join(RootFolder, "songs.db")
+
     // TemplatesFolder contains path to the templates folder calculated based on
     // the RootFolder path.
     TemplatesFolder = path.Join(RootFolder, "templates")
@@ -32,4 +35,23 @@ var (
     // subroutines and handlers that provided different services, reacting to
     // users' requests.
     AppsFolder = path.Join(RootFolder, "apps")
+
+    // StoreFolder contains all songs that we stream.
+    StoreFolder = path.Join(RootFolder, "store")
+
+    // StaticFolder contains static files that are to be served.
+    StaticFolder = path.Join(RootFolder, "static")
 )
+
+
+// InitRequired tell us whether the song database requeres initialization.
+// To figure that out, it checks whether path DatabaseFile actually exists.
+// Therefore, InitRequired must be run before
+//
+//     sql.Open("sqlite3", "./songs.db")
+//
+// is run. Otherwise, it gives falty results.
+func InitRequired() bool {
+    _, err := os.Stat(DatabaseFile)
+    return os.IsNotExist(err)
+}

@@ -8,20 +8,20 @@ import (
     "path"
     "html/template"
 
-    "github.com/sharpvik/lisn-backend/config"
+    "github.com/sharpvik/Lisn/config"
 )
 
 
 // TemplateData is a struct used for template generation.
 type TemplateData struct {
-    CssData            template.HTML
+    CSSData         template.HTML
     BodyContents    template.HTML
-    JavaScript        template.HTML
+    JavaScript      template.HTML
 }
 
 
-// MainHTMLTemplate is a string read from /templates/base.html -- it is the most
-// basic HTML template used in the project.
+// CSSData is a string read from /apps/index/static/style.html -- it is the 
+// style rules used for the page.
 var CSSData, _ = ioutil.ReadFile(
     path.Join(config.AppsFolder, "index", "static", "style.html"),
 )
@@ -60,7 +60,7 @@ func Serve(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 // FormBodyContents returns an HTML list of songs we have in the database.
 func FormBodyContents(db *sql.DB) (cont string) {
-    rows, _ := db.Query("SELECT title, author FROM songs")
+    rows, _ := db.Query("SELECT title, artist FROM songs")
 
     var title, author string
 
