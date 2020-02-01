@@ -12,7 +12,6 @@ import (
     "github.com/sharpvik/Lisn/config"
     "github.com/sharpvik/Lisn/apps/index"
     "github.com/sharpvik/Lisn/apps/song"
-    "github.com/sharpvik/Lisn/apps/favicon"
     "github.com/sharpvik/Lisn/apps/public"
 )
 
