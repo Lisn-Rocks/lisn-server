@@ -1,1 +1,0 @@
-alert('It all works! Look at the list -- it is blue!');

@@ -38,11 +38,11 @@ func ServeFile(w http.ResponseWriter, r *http.Request, logr *log.Logger) {
 
     if _, err := os.Stat(fullPath); os.IsNotExist(err) {
 		logr.Printf("Cannot serve. Path '%s' not found", fullPath)
-		
+
 		w.WriteHeader(http.StatusNotFound)
 		io.WriteString(w, "404 file not found")
 
-        return
+		return
     }
 
 

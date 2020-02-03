@@ -1,11 +1,11 @@
 package song
 
 import (
-    "net/http"
-    "fmt"
-    "database/sql"
-    "path"
-    "strings"
+	"net/http"
+	"fmt"
+	"database/sql"
+	"path"
+	"strings"
 	"log"
 	"os"
 	"io"
@@ -24,20 +24,20 @@ func ServeByID(
     split := strings.Split( r.URL.String(), "/" )[1:]
     id := split[1]
     
-    filepath := path.Join(
-        config.StoreFolder,
-        fmt.Sprintf("%s.mp3", id),
+	filepath := path.Join(
+		config.StoreFolder,
+		fmt.Sprintf("%s.mp3", id),
 	)
 	
 
 	if _, err := os.Stat(filepath); os.IsNotExist(err) {
 		logr.Printf("Cannot serve. Path '%s' not found", filepath)
-		
+
 		w.WriteHeader(http.StatusNotFound)
 		io.WriteString(w, "404 file not found")
 
-        return
-    }
+		return
+	}
 
     logr.Printf("Serving song at %s", filepath)
 
