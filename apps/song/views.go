@@ -25,7 +25,7 @@ func ServeByID(
     id := split[1]
     
 	filepath := path.Join(
-		config.StoreFolder,
+		config.SongsFolder,
 		fmt.Sprintf("%s.mp3", id),
 	)
 	

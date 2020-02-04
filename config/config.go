@@ -36,8 +36,9 @@ var (
     // users' requests.
     AppsFolder = path.Join(RootFolder, "apps")
 
-    // StoreFolder contains all songs that we stream.
-    StoreFolder = path.Join(RootFolder, "store")
+	// SongsFolder contains all songs that we stream. They are named with
+	// respect to their ID in the database (e.g. '1.mp3').
+    SongsFolder = path.Join(RootFolder, "songs")
 
     // PublicFolder contains static files that are to be served publically.
     // These files do not contain any sensitive data and thus we don't really
@@ -46,7 +47,7 @@ var (
 )
 
 
-// InitRequired tell us whether the song database requeres initialization.
+// InitRequired tell us whether the song database requires initialization.
 // To figure that out, it checks whether path DatabaseFile actually exists.
 // Therefore, InitRequired must be run before
 //
