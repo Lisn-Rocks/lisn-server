@@ -17,24 +17,11 @@ import (
 // ServeFile relies on URL param called 'path' that specifies subpath within
 // the PublicFodler. Example URL:
 //
-//     http://localhost:8000/public?path=favicon.gif
+//     http://localhost:8000/public/favicon.ico
 //
 func ServeFile(w http.ResponseWriter, r *http.Request, logr *log.Logger) {
-    paths, ok := r.URL.Query()["path"]
-
-    if !ok {
-        logr.Print("Cannot serve. Param 'paths' is probably missing")
-        return
-    }
-
-    if len(paths) < 1 {
-        logr.Print("Cannot serve. Path not specified")
-        return
-    }
-
-
-    apath := paths[0]
-    fullPath := path.Join(config.PublicFolder, apath)
+	apath := r.URL.String()
+    fullPath := path.Join(config.RootFolder, apath)
 
     if _, err := os.Stat(fullPath); os.IsNotExist(err) {
 		logr.Printf("Cannot serve. Path '%s' not found", fullPath)
@@ -44,7 +31,6 @@ func ServeFile(w http.ResponseWriter, r *http.Request, logr *log.Logger) {
 
 		return
     }
-
 
     http.ServeFile(w, r, fullPath)
 }

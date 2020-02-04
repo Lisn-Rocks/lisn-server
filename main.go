@@ -46,9 +46,8 @@ func main() {
     }
 
 
-    // mux is not used as there are no apps that use simple URL patterns.
-    // However, it may be useful in the future, so we keep it here.
-    mux = http.NewServeMux()
+	mux = http.NewServeMux()
+	mux.HandleFunc("/", index.Serve)
 
 
     logr.Printf("Serving at localhost%s", config.Port)
@@ -62,7 +61,7 @@ type mainHandler struct {}
 // ServeHTTP function is the entry point for server's routing mechanisms.
 // It is used to delegate request to a proper handler function.
 func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    url := stripParams( r.URL.String() )
+	url := stripParams( r.URL.String() )
     logr.Printf("URL: %s", url)
 
     var app string
@@ -81,9 +80,6 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     logr.Printf("App: %s", app)
 
     switch app {
-    case "index":
-        index.Serve(w, r, db)
-
     case "song":
         song.ServeByID(w, r, db, logr)
 
