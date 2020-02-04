@@ -1,0 +1,12 @@
+header div {
+    width: 50%;
+    text-align: center;
+    cursor: pointer;
+    line-height: var(--header-height);
+}
+
+header .queue-tab {
+    border-bottom: 3px solid white;
+    font-weight: 500;
+    transition: all 0.3s;
+}
