@@ -35,6 +35,6 @@ a {
 .active {
     font-weight: 500;
     border-bottom: 3px solid white;
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 </style>

@@ -1,11 +1,14 @@
 <template>
     <div id="app">
         <Topbar v-bind:tabs="tabs"/>
+        <main>
+
+        </main>
     </div>
 </template>
 
 <script>
-import Topbar from './components/Topbar.vue'
+import Topbar from './components/Topbar/Topbar.vue'
 
 export default {
     name: 'app',
@@ -60,10 +63,19 @@ export default {
     /* Header */
     --header-height: 60px;
     --header-font-size: 20px;
+
+    /* Main Section */
+    --main-section-height: calc( 100vh - var(--header-height) );
 }
 
 #app {
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
     position: relative;
+}
+
+#app main {
+    background-color: var(--main-color);
+    padding-top: var(--header-height);
+    height: var(--main-section-height);
 }
 </style>

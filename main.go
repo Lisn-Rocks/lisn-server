@@ -12,6 +12,7 @@ import (
     "github.com/sharpvik/Lisn/config"
     "github.com/sharpvik/Lisn/apps/index"
     "github.com/sharpvik/Lisn/apps/song"
+    "github.com/sharpvik/Lisn/apps/songinfo"
     "github.com/sharpvik/Lisn/apps/public"
 )
 
@@ -26,9 +27,16 @@ var db *sql.DB
 
 
 func main() {
+	var err error // declating it here so that global db is used on sql.Open
+	
+
     initRequired := config.InitRequired()
 
-    db, _ = sql.Open("sqlite3", config.DatabaseFile)
+	db, err = sql.Open("sqlite3", config.DatabaseFile)
+	
+	if err != nil {
+		panic("Can't open or initialize database")
+	}
 
     if initRequired {
         initDB(db)
@@ -47,7 +55,7 @@ func main() {
 
 
 	mux = http.NewServeMux()
-	mux.HandleFunc("/", index.Serve)
+	mux.HandleFunc("/", index.Redirect)
 
 
     logr.Printf("Serving at localhost%s", config.Port)
@@ -81,7 +89,10 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     switch app {
     case "song":
-        song.ServeByID(w, r, db, logr)
+		song.ServeByID(w, r, logr)
+		
+	case "songinfo":
+		songinfo.ServeJSON(w, r, db, logr)
 
     case "public":
         public.ServeFile(w, r, logr)

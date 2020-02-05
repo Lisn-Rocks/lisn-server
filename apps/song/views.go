@@ -3,7 +3,6 @@ package song
 import (
 	"net/http"
 	"fmt"
-	"database/sql"
 	"path"
 	"strings"
 	"log"
@@ -15,10 +14,14 @@ import (
 
 
 // ServeByID function is used to serve songs using their databse ID.
+//
+// Example URL:
+//
+//     http://localhost:8000/song/42
+//
 func ServeByID(
     w http.ResponseWriter,
     r *http.Request,
-    db *sql.DB,
     logr *log.Logger,
 ) {
     split := strings.Split( r.URL.String(), "/" )[1:]

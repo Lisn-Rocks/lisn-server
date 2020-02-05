@@ -5,7 +5,7 @@ import (
 )
 
 
-// Serve function is used to serve the main index of songs to the user.
-func Serve(w http.ResponseWriter, r *http.Request) {
+// Redirect fucntion redirects user towards index.html file.
+func Redirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/public/index.html", http.StatusMovedPermanently)
 }
