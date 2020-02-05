@@ -34,7 +34,7 @@ As soon as you have **Go** installed and running on your machine, you can do the
 following:
 
 ```bash
-go get https://github.com/sharpvik/Lisn
+go get github.com/sharpvik/Lisn
 ```
 
 This command will fetch the whole GitHub repo and put it into a specific place

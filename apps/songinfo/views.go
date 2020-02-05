@@ -56,6 +56,8 @@ func ServeJSON(
 	}
 
 
+	// Remove header below before building for production.
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsn)
 }

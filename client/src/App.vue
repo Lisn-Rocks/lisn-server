@@ -2,20 +2,26 @@
     <div id="app">
         <Topbar v-bind:tabs="tabs"/>
         <main>
-
+            <section v-bind:key="song.id" v-for="song in queue">
+                <SongTile v-bind:song="song" v-bind:songs="queue"/>
+            </section>
         </main>
     </div>
 </template>
 
 <script>
 import Topbar from './components/Topbar/Topbar.vue'
+import SongTile from './components/SongTile/SongTile.vue'
 
 export default {
     name: 'app',
+
     components: {
-        Topbar
+        Topbar,
+        SongTile
     },
-    data: () => {
+
+    data() {
         return {
             tabs: [
                 {
@@ -26,7 +32,30 @@ export default {
                     name: "Search",
                     isActive: false
                 }
-            ]
+            ],
+
+            // The song queue is fetched from server by the getQueue method.
+            queue: []
+        }
+    },
+
+    created() {
+        this.fetchQueue();
+    },
+
+    methods: {
+        fetchQueue() {
+            for (let i = 1; i < 5; i++) {
+                fetch('http://localhost:8000/songinfo/' + i)
+                    .then( response => response.json() )
+                    .then( song => {
+                        song.isActive = false;
+                        song.minutes = Math.floor(song.duration / 60).toString();
+                        song.seconds = (song.duration % 60).toString();
+                        song.seconds = (song.seconds.length < 2) ? '0' + song.seconds : song.seconds;
+                        this.queue.push(song);
+                    } );
+            }
         }
     }
 }
@@ -66,6 +95,12 @@ export default {
 
     /* Main Section */
     --main-section-height: calc( 100vh - var(--header-height) );
+
+    /* Song Tile */
+    --song-tile-height: 75px;
+    --song-title-font-size: 18px;
+    --song-artist-font-size: 14px;
+    --song-duration-font-size: 16px;
 }
 
 #app {
