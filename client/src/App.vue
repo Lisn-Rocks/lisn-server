@@ -46,7 +46,7 @@ export default {
     methods: {
         fetchQueue() {
             for (let i = 1; i < 5; i++) {
-                fetch('http://localhost:8000/songinfo/' + i)
+                fetch('http://192.168.0.24:8000/songinfo/' + i)
                     .then( response => response.json() )
                     .then( song => {
                         song.isActive = false;
