@@ -41,8 +41,7 @@ export default {
 
     data() {
         return {
-            ROUTE: '10.14.199.118', // must be changed appropriately
-            PORT: ':8000',          // must be changed appropriately
+            ROUTE: '10.14.199.118:8000', // must be changed appropriately
 
             tabs: [
                 {
@@ -70,7 +69,7 @@ export default {
     methods: {
         fetchQueue() {
             for (let i = 1; i < 5; i++) {
-                fetch('http://' + this.ROUTE + this.PORT + '/songinfo/' + i)
+                fetch('http://' + this.ROUTE + '/songinfo/' + i)
                 .then( response => response.json() )
                 .then( song => {
                     song.isActive = false;

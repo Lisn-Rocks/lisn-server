@@ -95,7 +95,13 @@ First of all, check that the line
 publicPath: '/public', // uncomment before building for deployment
 ```
 
-in `Lisn/client/vue.config.js` is uncommented! Then, run the following commands:
+in `Lisn/client/vue.config.js` is uncommented! 
+
+Also, change `ROUTE` in `Lisn/client/src/App.vue`. The `ROUTE` is an IP address 
+and your server's port on LAN or WLAN you use for testing (e.g. 
+`120.116.14.25:8000`) or a proper web link like `my-site.com`.
+
+Then, run the following commands:
 
 ```bash
 cd $GOPATH/src/github.com/sharpvik/Lisn
