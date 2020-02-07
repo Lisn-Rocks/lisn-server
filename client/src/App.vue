@@ -1,38 +1,51 @@
 <template>
     <div id="app">
-        <Topbar v-bind:tabs="tabs"/>
+
+        <header>
+            <div v-bind:key="tab.id" v-for="tab in tabs">
+                <TopbarTab 
+                    v-bind:tab="tab"
+                    v-bind:isActive="activeTabID === tab.id"
+                    v-on:switch="activate(tab.id)"
+                />
+            </div>
+        </header>
+
         <main>
             <section v-bind:key="song.id" v-for="song in queue">
                 <SongTile v-bind:song="song" v-bind:songs="queue"/>
             </section>
         </main>
+
     </div>
 </template>
 
 <script>
-import Topbar from './components/Topbar/Topbar.vue'
-import SongTile from './components/SongTile/SongTile.vue'
+import TopbarTab from './components/TopbarTab.vue'
+import SongTile from './components/SongTile.vue'
 
 export default {
     name: 'app',
 
     components: {
-        Topbar,
-        SongTile
+        TopbarTab,
+        SongTile,
     },
 
     data() {
         return {
             tabs: [
                 {
+                    id: 0,
                     name: "Queue",
-                    isActive: true
                 },
                 {
+                    id: 1,
                     name: "Search",
-                    isActive: false
                 }
             ],
+
+            activeTabID: 0,
 
             // The song queue is fetched from server by the getQueue method.
             queue: []
@@ -56,6 +69,10 @@ export default {
                         this.queue.push(song);
                     } );
             }
+        },
+
+        activate(tabID) {
+            this.activeTabID = tabID;
         }
     }
 }
@@ -106,6 +123,21 @@ export default {
 #app {
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
     position: relative;
+}
+
+#app header {
+    font-size: var(--header-font-size);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: var(--header-height);
+    background-color: var(--main-light-color);
+    display: flex;
+    color: white;
+    -webkit-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.5);
+    box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.5);
 }
 
 #app main {

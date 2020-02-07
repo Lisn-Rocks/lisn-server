@@ -1,7 +1,7 @@
 <template>
     <a 
-        v-bind:class="{ active: tab.isActive }"
-        v-on:click="activate"
+        v-bind:class="{ active: isActive }"
+        v-on:click="$emit('switch')"
     >
         {{ tab.name }}
     </a>
@@ -10,14 +10,9 @@
 <script>
 export default {
     name: 'TopbarTab',
-    props: ["tab", "tabs"],
-    methods: {
-        activate() {
-            this.tabs.forEach(tab => {
-                tab.isActive = false;
-            });
-            this.tab.isActive = true;
-        }
+    props: {
+        tab: Object,
+        isActive: Boolean
     }
 }
 </script>
