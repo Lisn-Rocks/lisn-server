@@ -6,30 +6,37 @@
                 <TopbarTab 
                     v-bind:tab="tab"
                     v-bind:isActive="activeTabID === tab.id"
-                    v-on:switch="activate(tab.id)"
+                    v-on:switch="activeTabID = tab.id"
                 />
             </div>
         </header>
 
         <main>
-            <section v-bind:key="song.id" v-for="song in queue">
-                <SongTile v-bind:song="song" v-bind:songs="queue"/>
-            </section>
+            <Queue
+                v-bind:queue="queue"
+                v-bind:isShown="activeTabID === 0"
+                v-bind:currentSongID="currentSongID"
+                v-on:playSong="currentSongID = $event"
+            />
+            <Search v-bind:isShown="activeTabID === 1"/>
         </main>
 
     </div>
 </template>
 
+
 <script>
 import TopbarTab from './components/TopbarTab.vue'
-import SongTile from './components/SongTile.vue'
+import Queue from './components/Queue.vue'
+import Search from './components/Search.vue'
 
 export default {
     name: 'app',
 
     components: {
         TopbarTab,
-        SongTile,
+        Queue,
+        Search,
     },
 
     data() {
@@ -46,6 +53,7 @@ export default {
             ],
 
             activeTabID: 0,
+            currentSongID: 0,
 
             // The song queue is fetched from server by the getQueue method.
             queue: []
@@ -60,23 +68,21 @@ export default {
         fetchQueue() {
             for (let i = 1; i < 5; i++) {
                 fetch('http://192.168.0.24:8000/songinfo/' + i)
-                    .then( response => response.json() )
-                    .then( song => {
-                        song.isActive = false;
-                        song.minutes = Math.floor(song.duration / 60).toString();
-                        song.seconds = (song.duration % 60).toString();
-                        song.seconds = (song.seconds.length < 2) ? '0' + song.seconds : song.seconds;
-                        this.queue.push(song);
-                    } );
+                .then( response => response.json() )
+                .then( song => {
+                    song.isActive = false;
+                    song.minutes = Math.floor(song.duration / 60).toString();
+                    song.seconds = (song.duration % 60).toString();
+                    song.seconds = (song.seconds.length < 2) 
+                        ? '0' + song.seconds : song.seconds;
+                    this.queue.push(song);
+                } );
             }
-        },
-
-        activate(tabID) {
-            this.activeTabID = tabID;
         }
     }
 }
 </script>
+
 
 <style>
 * {

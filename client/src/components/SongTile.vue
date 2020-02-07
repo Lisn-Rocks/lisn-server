@@ -1,7 +1,7 @@
 <template>
     <a class="song-tile"
-        v-bind:class="{ 'song-active': song.isActive }"
-        v-on:click="activate"
+        v-bind:class="{ 'song-active': isPlaying }"
+        v-on:click="$emit('play')"
     >
         <a class="song-info">
             <h4 class="song-title">{{ song.title }}</h4>
@@ -15,14 +15,9 @@
 <script>
 export default {
     name: "SongTile",
-    props: ["song", "songs"],
-    methods: {
-        activate() {
-            this.songs.forEach(song => {
-                song.isActive = false;
-            });
-            this.song.isActive = true;
-        }
+    props: {
+        song: Object, 
+        isPlaying: Boolean
     }
 }
 </script>
