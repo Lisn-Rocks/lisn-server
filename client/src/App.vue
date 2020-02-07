@@ -16,10 +16,15 @@
                 v-bind:queue="queue"
                 v-bind:isShown="activeTabID === tabs.Queue.id"
                 v-bind:currentSongID="currentSongID"
-                v-on:playSong="currentSongID = $event"
+                v-on:playSong="fetchAndPlay($event)"
             />
             <Search v-bind:isShown="activeTabID === tabs.Search.id"/>
         </main>
+
+        <PlayerMin 
+            v-bind:isShown="currentSongID > 0"
+            v-bind:currentSong="currentSong"
+        />
 
     </div>
 </template>
@@ -29,6 +34,7 @@
 import TopbarTab from './components/TopbarTab.vue'
 import Queue from './components/Queue.vue'
 import Search from './components/Search.vue'
+import PlayerMin from './components/PlayerMin.vue'
 
 export default {
     name: 'app',
@@ -37,10 +43,12 @@ export default {
         TopbarTab,
         Queue,
         Search,
+        PlayerMin
     },
 
     data() {
         return {
+            PROTO: 'http://',
             ROUTE: '10.14.199.118:8000', // must be changed appropriately
 
             tabs: {
@@ -56,6 +64,7 @@ export default {
 
             activeTabID: 0,
             currentSongID: 0,
+            currentSong: new Audio(),
 
             // The song queue is fetched from server by the getQueue method.
             queue: []
@@ -69,7 +78,7 @@ export default {
     methods: {
         fetchQueue() {
             for (let i = 1; i < 5; i++) {
-                fetch('http://' + this.ROUTE + '/songinfo/' + i)
+                fetch(this.PROTO + this.ROUTE + '/songinfo/' + i)
                 .then( response => response.json() )
                 .then( song => {
                     song.isActive = false;
@@ -79,6 +88,21 @@ export default {
                         ? '0' + song.seconds : song.seconds;
                     this.queue.push(song);
                 } );
+            }
+        },
+
+        async fetchAndPlay(songID) {
+            this.currentSong.pause();
+
+            this.currentSong = new Audio(this.PROTO + this.ROUTE + '/song/' + songID);
+            this.currentSong.type = 'audio/mp3';
+
+            this.currentSongID = songID;
+
+            try {
+                await this.currentSong.play();
+            } catch (err) {
+                alert('Failed to play: ' + err);
             }
         }
     }
