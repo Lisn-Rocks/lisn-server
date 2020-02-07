@@ -3,25 +3,47 @@
     songs that are served from a remote server using JavaScript.
 -->
 
-<button onclick="play('http://localhost:8000/song/1')">Play!</button>
-<button onclick="stop()">Stop!</button>
+<!DOCTYPE html>
+<html>
+<body>
+    <section 
+        onclick="fetchAndPlay('http://localhost:8000/song/1')"
+        style="cursor: pointer;"
+    >
+        Another One Bites The Dust
+    </section>
 
-<script>
-var currentSong;
+    <button id="ctrl">Switch</button>
 
-async function play(url) {
-    currentSong = new Audio(url);  
-    currentSong.type = 'audio/mp3';
+    <script>
+    var currentSong;
 
-    try {
-        await currentSong.play();
-        console.log('Playing...');
-    } catch (err) {
-        console.log('Failed to play...' + error);
+    async function fetchAndPlay(url) {
+        currentSong = new Audio(url);  
+        currentSong.type = 'audio/mp3';
+
+        try {
+            await currentSong.play();
+            console.log('Playing...');
+        } catch (err) {
+            console.log('Failed to play' + error);
+        }
     }
-}
 
-function stop() {
-    currentSong.pause();
-}
-</script>
+    document.addEventListener('click', (e) => {
+        if (!e.target.matches('#ctrl') || !currentSong) return;
+
+        if (currentSong.paused && !currentSong.ended) {
+            currentSong.play();
+            console.log('Resuming...')
+        } else if (!currentSong.paused && !currentSong.ended) {
+            currentSong.pause();
+            console.log('Paused')
+        } else {
+            console.log('Switch Error');
+        }
+    });
+    </script>
+</body>
+
+</html>

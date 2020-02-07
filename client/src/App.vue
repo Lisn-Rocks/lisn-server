@@ -14,11 +14,11 @@
         <main>
             <Queue
                 v-bind:queue="queue"
-                v-bind:isShown="activeTabID === 0"
+                v-bind:isShown="activeTabID === tabs.Queue.id"
                 v-bind:currentSongID="currentSongID"
                 v-on:playSong="currentSongID = $event"
             />
-            <Search v-bind:isShown="activeTabID === 1"/>
+            <Search v-bind:isShown="activeTabID === tabs.Search.id"/>
         </main>
 
     </div>
@@ -43,16 +43,16 @@ export default {
         return {
             ROUTE: '10.14.199.118:8000', // must be changed appropriately
 
-            tabs: [
-                {
+            tabs: {
+                Queue: {
                     id: 0,
                     name: "Queue",
                 },
-                {
+                Search: {
                     id: 1,
                     name: "Search",
                 }
-            ],
+            },
 
             activeTabID: 0,
             currentSongID: 0,
