@@ -7,6 +7,7 @@ import (
 	"strings"
 	"log"
 	"encoding/json"
+	"io"
 	"strconv"
 )
 
@@ -31,6 +32,10 @@ func ServeJSON(
 
 	if err != nil {
 		logr.Print("Cannot convert ID specified in URL to int")
+
+		w.WriteHeader(http.StatusForbidden)
+		io.WriteString(w, "400 forbidden")
+
 		return
 	}
 

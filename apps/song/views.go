@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"io"
+	"strconv"
 
     "github.com/sharpvik/Lisn/config"
 )
@@ -25,11 +26,23 @@ func ServeByID(
     logr *log.Logger,
 ) {
     split := strings.Split( r.URL.String(), "/" )[1:]
-    id := split[1]
+	
+	// Atoi used to prevent SQL injections. Only numbers pass!
+	id, err := strconv.Atoi(split[1])
+
+	if err != nil {
+		logr.Print("Cannot convert ID specified in URL to int")
+
+		w.WriteHeader(http.StatusForbidden)
+		io.WriteString(w, "400 forbidden")
+
+		return
+	}
+
     
 	filepath := path.Join(
-		config.SongsFolder,
-		fmt.Sprintf("%s.mp3", id),
+		config.SongsAudioFolder,
+		fmt.Sprintf("%d.mp3", id),
 	)
 	
 
@@ -42,7 +55,7 @@ func ServeByID(
 		return
 	}
 
-    logr.Printf("Serving song at %s", filepath)
 
+    logr.Printf("Serving song at %s", filepath)
     http.ServeFile(w, r, filepath)
 }

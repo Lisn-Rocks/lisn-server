@@ -2,7 +2,6 @@ package config
 
 import (
     "path"
-    "os"
 )
 
 
@@ -36,25 +35,17 @@ var (
     // users' requests.
     AppsFolder = path.Join(RootFolder, "apps")
 
-	// SongsFolder contains all songs that we stream. They are named with
-	// respect to their ID in the database (e.g. '1.mp3').
-    SongsFolder = path.Join(RootFolder, "songs")
+	// SongsFolder contains all data about the songs we stream.
+	SongsFolder = path.Join(RootFolder, "songs")
+	
+	// SongsAudioFolder contains all the audio files of the songs we serve.
+	SongsAudioFolder = path.Join(SongsFolder, "audio")
+
+	// SongsCoverFolder contains all album / playlist covers for the songs.
+	SongsCoverFolder = path.Join(SongsFolder, "cover")
 
     // PublicFolder contains static files that are to be served publically.
     // These files do not contain any sensitive data and thus we don't really
     // care if they can be accessed arbitrarily without any identity checkup.
     PublicFolder = path.Join(RootFolder, "public")
 )
-
-
-// InitRequired tell us whether the song database requires initialization.
-// To figure that out, it checks whether path DatabaseFile actually exists.
-// Therefore, InitRequired must be run before
-//
-//     sql.Open("sqlite3", "./songs.db")
-//
-// is run. Otherwise, it gives falty results.
-func InitRequired() bool {
-    _, err := os.Stat(DatabaseFile)
-    return os.IsNotExist(err)
-}

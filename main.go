@@ -10,7 +10,6 @@ import (
     _ "github.com/mattn/go-sqlite3"
 
     "github.com/sharpvik/Lisn/config"
-    "github.com/sharpvik/Lisn/apps/index"
     "github.com/sharpvik/Lisn/apps/song"
     "github.com/sharpvik/Lisn/apps/songinfo"
     "github.com/sharpvik/Lisn/apps/public"
@@ -28,20 +27,12 @@ var db *sql.DB
 
 func main() {
 	var err error // declating it here so that global db is used on sql.Open
-	
-
-    initRequired := config.InitRequired()
 
 	db, err = sql.Open("sqlite3", config.DatabaseFile)
 	
 	if err != nil {
 		panic("Can't open or initialize database")
 	}
-
-    if initRequired {
-        initDB(db)
-        insertSongs(db)
-    }
 
 
     logr = log.New(os.Stdout, "", log.Ltime)
@@ -55,7 +46,6 @@ func main() {
 
 
 	mux = http.NewServeMux()
-	mux.HandleFunc("/", index.Redirect)
 
 
     logr.Printf("Serving at localhost%s", config.Port)
@@ -72,18 +62,17 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	url := stripParams( r.URL.String() )
     logr.Printf("URL: %s", url)
 
-    var app string
 
     if url == "/" {
-        app = "index"
-
-    } else {
-        split := strings.Split(url, "/")[1:]
+        url = "/public/index.html"
+	}
+	
+	split := strings.Split(url, "/")[1:]
     
-        // First string in the split must name the app for which this request is
-        // being made. That helps keep app routing at O(1).
-        app = split[0]
-    }
+	// First string in the split must name the app for which this request is
+	// being made. That helps keep app routing at O(1).
+	app := split[0]
+
 
     logr.Printf("App: %s", app)
 
@@ -100,21 +89,6 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     default:
         mux.ServeHTTP(w, r)
     }
-}
-
-
-
-func initDB(db *sql.DB) {
-    stmt, _ := db.Prepare("CREATE TABLE IF NOT EXISTS songs (id INTEGER PRIMARY KEY, title TEXT, duration INTEGER, genre TEXT, artist TEXT, album TEXT NULL)")
-    stmt.Exec()
-}
-
-func insertSongs(db *sql.DB) {
-    stmt, _ := db.Prepare("INSERT INTO songs (title, duration, genre, artist, album) VALUES (?, ?, ?, ?, ?)")
-    stmt.Exec("Another One Bites the Dust", 222, "Classic Rock", "Queen", "The Game")
-    stmt.Exec("Don't Stop Me Now", 217, "Classic Rock", "Queen", "Jazz")
-    stmt.Exec("I Want To Break Free", 271, "Classic Rock", "Queen", "The Works")
-    stmt.Exec("Somebody To Love", 309, "Rock", "Queen", "A Day at the Races")
 }
 
 
