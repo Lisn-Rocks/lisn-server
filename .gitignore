@@ -1,9 +1,13 @@
-Lisn
-songs.db
+# files and storage
+music
+storage
+
+# big folders
 .DS_Store
 node_modules
 
-# public build
+# builds
+Lisn
 public/*
 
 # local env files
