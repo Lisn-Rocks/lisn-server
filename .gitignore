@@ -2,6 +2,7 @@
 music
 storage
 config/secret.go
+design/db/dump
 
 # big folders
 .DS_Store
