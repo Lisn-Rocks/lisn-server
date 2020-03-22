@@ -6,13 +6,16 @@ import (
     "net/http"
     "log"
     "strings"
+	"fmt"
 
-    _ "github.com/mattn/go-sqlite3"
+    _ "github.com/lib/pq"
 
     "github.com/sharpvik/Lisn/config"
-    "github.com/sharpvik/Lisn/apps/song"
+	"github.com/sharpvik/Lisn/apps/song"
+	/*
     "github.com/sharpvik/Lisn/apps/songinfo"
     "github.com/sharpvik/Lisn/apps/public"
+	*/
 )
 
 
@@ -26,12 +29,26 @@ var db *sql.DB
 
 
 func main() {
-	var err error // declating it here so that global db is used on sql.Open
+	var err error // declaring it here so that global db is used on sql.Open
 
-	db, err = sql.Open("sqlite3", config.DatabaseFile)
-	
+	psqlInfo := fmt.Sprintf(
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		config.DBhost, config.DBport, config.DBuser,
+		config.DBpassword, config.DBname,
+	)
+
+	db, err = sql.Open("postgres", psqlInfo)
+
 	if err != nil {
-		panic("Can't open or initialize database")
+		panic("Database arguments are invalid")
+	}
+
+	defer db.Close()
+
+	err = db.Ping()
+
+	if err != nil {
+		panic("Can't connect to the database")
 	}
 
 
@@ -53,7 +70,6 @@ func main() {
 }
 
 
-
 type mainHandler struct {}
 
 // ServeHTTP function is the entry point for server's routing mechanisms.
@@ -66,9 +82,9 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     if url == "/" {
         url = "/public/index.html"
 	}
-	
+
 	split := strings.Split(url, "/")[1:]
-    
+
 	// First string in the split must name the app for which this request is
 	// being made. That helps keep app routing at O(1).
 	app := split[0]
@@ -78,20 +94,24 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     switch app {
     case "song":
-		song.ServeByID(w, r, logr)
-		
+		song.ServeByID(w, r, db, logr)
+
+	case "random":
+		song.ServeRandom(w, r, db, logr)
+/*
 	case "songinfo":
 		songinfo.ServeJSON(w, r, db, logr)
 
     case "public":
         public.ServeFile(w, r, logr)
-
+*/
     default:
         mux.ServeHTTP(w, r)
     }
 }
 
 
+/* This function is not used for now but may be useful later
 func stripParams(url string) string {
     questionmarkIndex := strings.IndexByte(url, '?')
 
@@ -101,3 +121,4 @@ func stripParams(url string) string {
 
     return url
 }
+*/

@@ -1,6 +1,7 @@
 # files and storage
 music
 storage
+config/secret.go
 
 # big folders
 .DS_Store

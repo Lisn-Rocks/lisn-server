@@ -23,26 +23,14 @@ const (
 // These are declared as var because their values are computed based on the
 // constants above.
 var (
-    // DatabaseFile contains path to the main songs databse.
-    DatabaseFile = path.Join(RootFolder, "songs.db")
+    // StorageFolder contains all data necessary for the service to run properly.
+	StorageFolder = path.Join(RootFolder, "storage")
 
-    // TemplatesFolder contains path to the templates folder calculated based on
-    // the RootFolder path.
-    TemplatesFolder = path.Join(RootFolder, "templates")
+	// SongsFolder contains all the audio files of the songs we serve.
+	SongsFolder = path.Join(StorageFolder, "songs")
 
-    // AppsFolder contains all apps used in this project. Apps are basically
-    // subroutines and handlers that provided different services, reacting to
-    // users' requests.
-    AppsFolder = path.Join(RootFolder, "apps")
-
-	// SongsFolder contains all data about the songs we stream.
-	SongsFolder = path.Join(RootFolder, "songs")
-	
-	// SongsAudioFolder contains all the audio files of the songs we serve.
-	SongsAudioFolder = path.Join(SongsFolder, "audio")
-
-	// SongsCoverFolder contains all album / playlist covers for the songs.
-	SongsCoverFolder = path.Join(SongsFolder, "cover")
+	// AlbumsFolder contains all album / playlist covers for the songs.
+	AlbumsFolder = path.Join(StorageFolder, "albums")
 
     // PublicFolder contains static files that are to be served publically.
     // These files do not contain any sensitive data and thus we don't really
