@@ -16,7 +16,7 @@ const (
     // paths of different files on the system.
     //
     // MAKE SURE TO CHANGE IT BEFORE RUNNING THE SERVER ON YOUR MACHINE!
-	RootFolder = "/home/sharpvik/go/src/github.com/sharpvik/Lisn"
+    RootFolder = "/home/sharpvik/go/src/github.com/sharpvik/Lisn"
 )
 
 
@@ -24,13 +24,13 @@ const (
 // constants above.
 var (
     // StorageFolder contains all data necessary for the service to run properly.
-	StorageFolder = path.Join(RootFolder, "storage")
+    StorageFolder = path.Join(RootFolder, "storage")
 
-	// SongsFolder contains all the audio files of the songs we serve.
-	SongsFolder = path.Join(StorageFolder, "songs")
+    // SongsFolder contains all the audio files of the songs we serve.
+    SongsFolder = path.Join(StorageFolder, "songs")
 
-	// AlbumsFolder contains all album / playlist covers for the songs.
-	AlbumsFolder = path.Join(StorageFolder, "albums")
+    // AlbumsFolder contains all album / playlist covers for the songs.
+    AlbumsFolder = path.Join(StorageFolder, "albums")
 
     // PublicFolder contains static files that are to be served publically.
     // These files do not contain any sensitive data and thus we don't really

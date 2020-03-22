@@ -4,8 +4,8 @@ import (
     "log"
     "net/http"
     "path"
-	"os"
-	"io"
+    "os"
+    "io"
 
     "github.com/sharpvik/Lisn/config"
 )
@@ -20,16 +20,16 @@ import (
 //     http://localhost:8000/public/favicon.ico
 //
 func ServeFile(w http.ResponseWriter, r *http.Request, logr *log.Logger) {
-	apath := r.URL.String()
+    apath := r.URL.String()
     fullPath := path.Join(config.RootFolder, apath)
 
     if _, err := os.Stat(fullPath); os.IsNotExist(err) {
-		logr.Printf("Cannot serve. Path '%s' not found", fullPath)
+        logr.Printf("Cannot serve. Path '%s' not found", fullPath)
 
-		w.WriteHeader(http.StatusNotFound)
-		io.WriteString(w, "404 file not found")
+        w.WriteHeader(http.StatusNotFound)
+        io.WriteString(w, "404 file not found")
 
-		return
+        return
     }
 
     http.ServeFile(w, r, fullPath)
