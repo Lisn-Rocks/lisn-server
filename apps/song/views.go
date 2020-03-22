@@ -6,6 +6,7 @@ import (
     "log"
     "io"
     "strconv"
+    "fmt"
     "database/sql"
     "math/rand"
 
@@ -54,7 +55,8 @@ func ServeByID(
 
 
 
-// ServeRandom serves one random song when called.
+// ServeRandom serves one random song when called by generating a random song ID
+// and redirecting to the URL that invokes ServeByID.
 func ServeRandom(
     w http.ResponseWriter, r *http.Request,
     db *sql.DB, logr *log.Logger,
@@ -66,19 +68,11 @@ func ServeRandom(
 
 
     songid := rand.Intn(n) + 1
-    extension, err := getSongExtension(songid, db)
-
-    if err != nil {
-        logr.Print("Cannot serve random song due to database error")
-
-        w.WriteHeader(http.StatusInternalServerError)
-        io.WriteString(w, "500 internal server error")
-
-        return
-    }
-
-
-    serveFileFromFolder(w, r, logr, config.SongsFolder, songid, extension)
+    http.Redirect(
+        w, r,
+        fmt.Sprintf("/song/%d", songid),
+        http.StatusSeeOther,
+    )
 }
 
 
