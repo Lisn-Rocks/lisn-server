@@ -98,6 +98,9 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     case "random":
         song.ServeRandom(w, r, db, logr)
+
+    case "cover":
+        song.ServeCover(w, r, db, logr)
 /*
     case "songinfo":
         songinfo.ServeJSON(w, r, db, logr)
