@@ -111,7 +111,6 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 
-/* This function is not used for now but may be useful later
 func stripParams(url string) string {
     questionmarkIndex := strings.IndexByte(url, '?')
 
@@ -121,4 +120,3 @@ func stripParams(url string) string {
 
     return url
 }
-*/
