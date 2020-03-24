@@ -2,13 +2,12 @@ package song
 
 import (
     "net/http"
-    "strings"
     "log"
     "io"
-    "strconv"
     "fmt"
     "database/sql"
     "math/rand"
+    "encoding/json"
 
     "github.com/sharpvik/Lisn/config"
 )
@@ -25,10 +24,7 @@ func ServeByID(
     w http.ResponseWriter, r *http.Request,
     db *sql.DB, logr *log.Logger,
 ) {
-    split := strings.Split( r.URL.String(), "/" )[1:]
-
-    // Atoi used to prevent injections. Only numbers pass!
-    songid, err := strconv.Atoi(split[1])
+    songid, err := parseIDFromURL(r)
 
     if err != nil {
         logr.Print("Cannot convert song id specified in URL to int")
@@ -38,7 +34,6 @@ func ServeByID(
 
         return
     }
-
 
     if !songExists(songid, db) {
         logr.Print("Song with given ID does not exist in the database")
@@ -66,7 +61,6 @@ func ServeRandom(
     row := db.QueryRow(`SELECT count(*) FROM songs;`)
     row.Scan(&n)
 
-
     songid := rand.Intn(n) + 1
     http.Redirect(
         w, r,
@@ -87,10 +81,7 @@ func ServeCover(
     w http.ResponseWriter, r *http.Request,
     db *sql.DB, logr *log.Logger,
 ) {
-    split := strings.Split( r.URL.String(), "/" )[1:]
-
-    // Atoi used to prevent injections. Only numbers pass!
-    id, err := strconv.Atoi(split[1])
+    id, err := parseIDFromURL(r)
 
     if err != nil {
         logr.Print("Cannot convert ID specified in URL to int")
@@ -100,7 +91,6 @@ func ServeCover(
 
         return
     }
-
 
     if !songExists(id, db) {
         logr.Print("Song with given ID does not exist in the database")
@@ -114,4 +104,88 @@ func ServeCover(
     albumid, _ := getAlbumID(id, db)
     extension, _ := getAlbumExtension(albumid, db)
     serveFileFromFolder(w, r, logr, config.AlbumsFolder, albumid, extension)
+}
+
+
+
+// ServeJSON function serves song data in JSON file. Song's database ID must be
+// specified in request URL.
+//
+// Example URL:
+//
+//     http://localhost:8000/songinfo/42
+//
+func ServeJSON(
+    w http.ResponseWriter,
+    r *http.Request,
+    db *sql.DB,
+    logr *log.Logger,
+) {
+    songid, err := parseIDFromURL(r)
+
+    if err != nil {
+        logr.Print("Cannot convert ID specified in URL to int")
+
+        w.WriteHeader(http.StatusForbidden)
+        io.WriteString(w, "400 forbidden")
+
+        return
+    }
+
+
+    if !songExists(songid, db) {
+        logr.Print("Song with given ID does not exist in the database")
+
+        w.WriteHeader(http.StatusNotFound)
+        io.WriteString(w, "404 song not found in database")
+
+        return
+    }
+
+
+    row := db.QueryRow(
+        `SELECT name, artistid, genre, albumid FROM songs WHERE songid=$1;`,
+        songid,
+    )
+
+    var artistid, albumid int
+    var name, genre string
+
+    row.Scan(&name, &artistid, &genre, &albumid)
+
+
+    artist, err := getArtistName(artistid, db)
+    album, err := getAlbumName(songid, db)
+
+    if err != nil {
+        logr.Print("Failed to obtain artist or album name")
+
+        w.WriteHeader(http.StatusInternalServerError)
+        io.WriteString(w, "500 internal server error")
+
+        return
+    }
+
+
+    asong := song{
+        songid,
+        name,
+        artist,
+        genre,
+        album,
+    }
+
+    jsn, err := json.Marshal(asong)
+
+    if err != nil {
+        logr.Printf("Error: %s", err)
+        fmt.Fprintf(w, "Error: %s", err)
+        return
+    }
+
+
+    // Remove header below before building for production.
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(jsn)
 }

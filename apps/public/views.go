@@ -20,8 +20,7 @@ import (
 //     http://localhost:8000/public/favicon.ico
 //
 func ServeFile(w http.ResponseWriter, r *http.Request, logr *log.Logger) {
-    apath := r.URL.String()
-    fullPath := path.Join(config.RootFolder, apath)
+    fullPath := path.Join(config.RootFolder, r.URL.String())
 
     if _, err := os.Stat(fullPath); os.IsNotExist(err) {
         logr.Printf("Cannot serve. Path '%s' not found", fullPath)
@@ -32,5 +31,6 @@ func ServeFile(w http.ResponseWriter, r *http.Request, logr *log.Logger) {
         return
     }
 
+    logr.Printf("Serving file %s", fullPath)
     http.ServeFile(w, r, fullPath)
 }

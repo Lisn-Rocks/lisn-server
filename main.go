@@ -12,10 +12,7 @@ import (
 
     "github.com/sharpvik/Lisn/config"
     "github.com/sharpvik/Lisn/apps/song"
-    /*
-    "github.com/sharpvik/Lisn/apps/songinfo"
     "github.com/sharpvik/Lisn/apps/public"
-    */
 )
 
 
@@ -81,6 +78,8 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     if url == "/" {
         url = "/public/index.html"
+        http.Redirect(w, r, url, http.StatusSeeOther)
+        return
     }
 
     split := strings.Split(url, "/")[1:]
@@ -101,13 +100,13 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     case "cover":
         song.ServeCover(w, r, db, logr)
-/*
-    case "songinfo":
-        songinfo.ServeJSON(w, r, db, logr)
+
+    case "info":
+        song.ServeJSON(w, r, db, logr)
 
     case "public":
         public.ServeFile(w, r, logr)
-*/
+
     default:
         mux.ServeHTTP(w, r)
     }

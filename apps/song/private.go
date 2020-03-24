@@ -6,12 +6,24 @@ import (
     "net/http"
     "log"
     "database/sql"
-    "errors"
     "path"
+    "strings"
+    "strconv"
     "fmt"
     "os"
     "io"
 )
+
+
+
+func parseIDFromURL(r *http.Request) (id int, err error) {
+    split := strings.Split( r.URL.String(), "/" )[1:]
+
+    // Atoi used to prevent injections. Only numbers pass!
+    id, err = strconv.Atoi(split[1])
+
+    return
+}
 
 
 
@@ -24,46 +36,50 @@ func songExists(songid int, db *sql.DB) bool {
 
 
 
-func getSongExtension(songid int, db *sql.DB) (string, error) {
-    var extension string
+func getSongExtension(songid int, db *sql.DB) (extension string, err error) {
     row := db.QueryRow(`SELECT extension FROM songs WHERE songid=$1;`, songid)
-    err := row.Scan(&extension)
-
-    if err != nil {
-        return "", errors.New("Unexpected error occurred")
-    }
-
-    return extension, nil
+    err = row.Scan(&extension)
+    return
 }
 
 
 
-func getAlbumID(songid int, db *sql.DB) (int, error) {
-    var albumid int
+func getAlbumID(songid int, db *sql.DB) (albumid int, err error) {
     row := db.QueryRow(`SELECT albumid FROM songs WHERE songid=$1;`, songid)
-    err := row.Scan(&albumid)
-
-    if err != nil {
-        return 0, errors.New("Unexpected error occurred")
-    }
-
-    return albumid, nil
+    err = row.Scan(&albumid)
+    return
 }
 
 
 
-func getAlbumExtension(albumid int, db *sql.DB) (string, error) {
-    var extension string
+func getAlbumName(songid int, db *sql.DB) (name string, err error) {
+    albumid, err := getAlbumID(songid, db)
+
+    if err != nil {
+        return
+    }
+
+    row := db.QueryRow(`SELECT name FROM albums WHERE albumid=$1;`, albumid)
+    row.Scan(&name)
+    return
+}
+
+
+
+func getAlbumExtension(albumid int, db *sql.DB) (extension string, err error) {
     row := db.QueryRow(
         `SELECT extension FROM albums WHERE albumid=$1;`, albumid,
     )
-    err := row.Scan(&extension);
+    err = row.Scan(&extension);
+    return
+}
 
-    if err != nil {
-        return "", errors.New("Unexpected error occurred")
-    }
 
-    return extension, nil
+
+func getArtistName(artistid int, db *sql.DB) (name string, err error) {
+    row := db.QueryRow(`SELECT name FROM artists WHERE artistid=$1;`, artistid)
+    err = row.Scan(&name)
+    return
 }
 
 
@@ -74,7 +90,6 @@ func serveFileFromFolder(
 ) {
     filepath := path.Join( folder, fmt.Sprintf("%d%s", songid, extension) )
 
-
     if _, err := os.Stat(filepath); os.IsNotExist(err) {
         logr.Printf("Cannot serve. File '%s' not found in filesystem", filepath)
 
@@ -83,7 +98,6 @@ func serveFileFromFolder(
 
         return
     }
-
 
     logr.Printf("Serving file %s", filepath)
     http.ServeFile(w, r, filepath)
