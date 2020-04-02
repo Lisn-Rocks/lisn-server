@@ -49,7 +49,7 @@ export default {
     data() {
         return {
             PROTO: 'http://',
-            ROUTE: '10.14.199.118:8000', // must be changed appropriately
+            ROUTE: 'localhost:8000', // must be changed appropriately
 
             tabs: {
                 Queue: {
@@ -77,17 +77,15 @@ export default {
 
     methods: {
         fetchQueue() {
-            for (let i = 1; i < 5; i++) {
-                fetch(this.PROTO + this.ROUTE + '/songinfo/' + i)
-                .then( response => response.json() )
-                .then( song => {
+            for (let i = 0; i < 5; i++) {
+                fetch(
+                    this.PROTO + this.ROUTE + '/random',
+                    { method: 'POST', redirect: 'follow' }
+                ).then( response => response.json() )
+                .then(song => {
                     song.isActive = false;
-                    song.minutes = Math.floor(song.duration / 60).toString();
-                    song.seconds = (song.duration % 60).toString();
-                    song.seconds = (song.seconds.length < 2) 
-                        ? '0' + song.seconds : song.seconds;
                     this.queue.push(song);
-                } );
+                });
             }
         },
 

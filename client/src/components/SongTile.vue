@@ -4,11 +4,9 @@
         v-on:click="$emit('play')"
     >
         <a class="song-info">
-            <h4 class="song-title">{{ song.title }}</h4>
+            <h4 class="song-title">{{ song.name }}</h4>
             <h6 class="song-artist">{{ song.artist }}</h6>
         </a>
-
-        <p class="song-duration">{{ song.minutes }}:{{ song.seconds }}</p>
     </a>
 </template>
 
@@ -49,12 +47,6 @@ export default {
     color: var(--secondary-white);
 }
 
-.song-tile .song-duration {
-    line-height: var(--song-tile-height);
-    font-weight: 300;
-    font-size: var(--song-duration-font-size);
-}
-
 .song-active {
     color: var(--accent-color);
     transition: all 0.2s;
@@ -66,9 +58,5 @@ export default {
 .song-active .song-info .song-artist {
     color: var(--accent-light-color);
     font-weight: 500;
-}
-
-.song-active .song-duration {
-    font-weight: 400;
 }
 </style>
