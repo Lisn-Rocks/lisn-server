@@ -1,5 +1,4 @@
 # files and storage
-music
 storage
 config/secret.go
 design/db/dump

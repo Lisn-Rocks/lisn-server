@@ -2,7 +2,6 @@ package main
 
 import (
     "database/sql"
-    "os"
     "net/http"
     "log"
     "strings"
@@ -49,7 +48,7 @@ func main() {
     }
 
 
-    logr = log.New(os.Stdout, "", log.Ltime)
+    logr = log.New(config.LogWriter, config.LogPrefix, log.Ltime)
 
 
     server := http.Server{

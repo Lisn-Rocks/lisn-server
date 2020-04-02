@@ -2,6 +2,7 @@ package config
 
 import (
     "path"
+    "os"
 )
 
 
@@ -20,8 +21,9 @@ const (
 )
 
 
-// These are declared as var because their values are computed based on the
-// constants above.
+// The following variables contain string paths of different folders.
+// These are declared as var because their values are computed at runtime based
+// on the RootFolder value.
 var (
     // StorageFolder contains all data necessary for the service to run properly.
     StorageFolder = path.Join(RootFolder, "storage")
@@ -37,3 +39,13 @@ var (
     // care if they can be accessed arbitrarily without any identity checkup.
     PublicFolder = path.Join(RootFolder, "public")
 )
+
+
+// The following values are used by the logger. Configure them as you please.
+
+// LogWriter must implement Writer and is uded by the logger to know where to
+// write the logs to.
+var LogWriter = os.Stdout
+
+// LogPrefix is a string used by the logger to prefix every log message.
+const LogPrefix = ""
