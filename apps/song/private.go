@@ -9,6 +9,7 @@ import (
     "path"
     "strings"
     "strconv"
+    "errors"
     "fmt"
     "os"
     "io"
@@ -18,6 +19,11 @@ import (
 
 func parseIDFromURL(r *http.Request) (id int, err error) {
     split := strings.Split( r.URL.String(), "/" )[1:]
+
+    if len(split) != 2 {
+        err = errors.New("Incorrect number of elements in a split")
+        return
+    }
 
     // Atoi used to prevent injections. Only numbers pass!
     id, err = strconv.Atoi(split[1])
