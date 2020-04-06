@@ -1,10 +1,10 @@
 <template>
     <div id="queue" v-bind:class="{ shown: isShown }">
-        <div v-bind:key="song.songid" v-for="song in queue">
+        <div v-bind:key="song.qid" v-for="song in queue">
             <SongTile
                 v-bind:song="song"
-                v-bind:isPlaying="currentSongID === song.songid"
-                v-on:play="$emit('playSong', song.songid)"
+                v-bind:isPlaying="currentSongQID === song.qid"
+                v-on:play="$emit('goto', song.qid)"
             />
         </div>
     </div>
@@ -23,7 +23,7 @@ export default {
     props: {
         isShown: Boolean,
         queue: Array,
-        currentSongID: Number
+        currentSongQID: Number
     }
 }
 </script>

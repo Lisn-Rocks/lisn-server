@@ -14,7 +14,7 @@
 export default {
     name: "SongTile",
     props: {
-        song: Object, 
+        song: Object,
         isPlaying: Boolean
     }
 }

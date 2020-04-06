@@ -13,17 +13,20 @@
 
         <main>
             <Queue
-                v-bind:queue="queue"
+                v-bind:queue="queue.q"
                 v-bind:isShown="activeTabID === tabs.Queue.id"
-                v-bind:currentSongID="currentSongID"
-                v-on:playSong="fetchAndPlay($event)"
+                v-bind:currentSongQID="currentSongQID"
+                v-on:goto="goto($event)"
             />
             <Search v-bind:isShown="activeTabID === tabs.Search.id"/>
         </main>
 
         <PlayerMin 
-            v-bind:isShown="currentSongID > 0"
-            v-bind:currentSong="currentSong"
+            v-bind:isShown="currentSongQID > -1"
+            v-bind:progress="currentSong.duration"
+            v-bind:paused="currentSong.paused"
+            v-bind:currentSongInfo="queue.get(0)"
+            v-on:toggle="toggle"
         />
 
     </div>
@@ -31,10 +34,12 @@
 
 
 <script>
-import TopbarTab from './components/TopbarTab.vue'
-import Queue from './components/Queue.vue'
-import Search from './components/Search.vue'
-import PlayerMin from './components/PlayerMin.vue'
+import TopbarTab from './components/TopbarTab.vue';
+import Queue from './components/Queue.vue';
+import Search from './components/Search.vue';
+import PlayerMin from './components/PlayerMin.vue';
+
+import { SongQueue } from './datatypes/SongQueue.js';
 
 export default {
     name: 'app',
@@ -49,7 +54,7 @@ export default {
     data() {
         return {
             PROTO: 'http://',
-            ROUTE: 'localhost:8000', // must be changed appropriately
+            ROUTE: '1b0f69e6.ngrok.io', // must be changed appropriately
 
             tabs: {
                 Queue: {
@@ -63,11 +68,12 @@ export default {
             },
 
             activeTabID: 0,
-            currentSongID: 0,
+            currentSongQID: -1,
             currentSong: new Audio(),
 
-            // The song queue is fetched from server by the getQueue method.
-            queue: []
+            // The SongQueue is filled with random songs from server by the
+            // fetchQueue method.
+            queue: new SongQueue(),
         }
     },
 
@@ -80,7 +86,7 @@ export default {
             for (let i = 0; i < 5; i++) {
                 fetch(
                     this.PROTO + this.ROUTE + '/random',
-                    { method: 'POST', redirect: 'follow' }
+                    { method: 'GET', redirect: 'follow' }
                 ).then( response => response.json() )
                 .then(song => {
                     song.isActive = false;
@@ -89,19 +95,31 @@ export default {
             }
         },
 
-        async fetchAndPlay(songID) {
+        async fetchAndPlay(songQID) {
             this.currentSong.pause();
 
+            let songID = this.queue.get(songQID).songid;
             this.currentSong = new Audio(this.PROTO + this.ROUTE + '/song/' + songID);
             this.currentSong.type = 'audio/mp3';
 
-            this.currentSongID = songID;
+            this.currentSongQID = songQID;
 
             try {
                 await this.currentSong.play();
             } catch (err) {
                 alert('Failed to play: ' + err);
             }
+        },
+
+        goto(songQID) {
+            this.queue.goto(songQID);
+            this.fetchAndPlay(this.queue.get(0).qid);
+        },
+
+        toggle() {
+            if (this.currentSong.paused)
+                this.currentSong.play();
+            else this.currentSong.pause();
         }
     }
 }
@@ -148,6 +166,9 @@ export default {
     --song-title-font-size: 18px;
     --song-artist-font-size: 14px;
     --song-duration-font-size: 16px;
+
+    /* Player Minimized */
+    --player-minimized-height: 65px;
 }
 
 #app {
