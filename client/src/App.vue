@@ -70,7 +70,7 @@ export default {
 
             activeTabID: 0,
             currentSongQID: -1,
-            currentSong: new Audio(this.PROTO + this.ROUTE + '/song/1'),
+            currentSong: new Audio(),
             currentSongInfo: {},
 
             // The SongQueue is filled with random songs from server by the
@@ -117,7 +117,9 @@ export default {
 
             this.currentSongQID = songQID;
             this.currentSongInfo = this.queue.get(0);
+
             this.fetchAndPlay(this.queue.get(0).songid);
+            this.playerUpdate();
         },
 
         toggle() {
@@ -129,7 +131,6 @@ export default {
 
         playerUpdate() {
             this.a = !this.a;
-            this.updCount++;
         }
     }
 }
