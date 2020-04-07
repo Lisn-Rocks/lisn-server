@@ -23,10 +23,11 @@
 
         <PlayerMin 
             v-bind:isShown="currentSongQID > -1"
-            v-bind:progress="currentSong.duration"
-            v-bind:paused="currentSong.paused"
-            v-bind:currentSongInfo="queue.get(0)"
+            v-bind:currentSong="currentSong"
+            v-bind:currentSongInfo="currentSongInfo"
             v-on:toggle="toggle"
+            v-on:upd="playerUpdate"
+            :key="a"
         />
 
     </div>
@@ -69,11 +70,14 @@ export default {
 
             activeTabID: 0,
             currentSongQID: -1,
-            currentSong: new Audio(),
+            currentSong: new Audio(this.PROTO + this.ROUTE + '/song/1'),
+            currentSongInfo: {},
 
             // The SongQueue is filled with random songs from server by the
             // fetchQueue method.
             queue: new SongQueue(),
+
+            a: false,
         }
     },
 
@@ -95,14 +99,11 @@ export default {
             }
         },
 
-        async fetchAndPlay(songQID) {
+        async fetchAndPlay(songID) {
             this.currentSong.pause();
 
-            let songID = this.queue.get(songQID).songid;
             this.currentSong = new Audio(this.PROTO + this.ROUTE + '/song/' + songID);
             this.currentSong.type = 'audio/mp3';
-
-            this.currentSongQID = songQID;
 
             try {
                 await this.currentSong.play();
@@ -113,13 +114,22 @@ export default {
 
         goto(songQID) {
             this.queue.goto(songQID);
-            this.fetchAndPlay(this.queue.get(0).qid);
+
+            this.currentSongQID = songQID;
+            this.currentSongInfo = this.queue.get(0);
+            this.fetchAndPlay(this.queue.get(0).songid);
         },
 
         toggle() {
             if (this.currentSong.paused)
                 this.currentSong.play();
             else this.currentSong.pause();
+            this.playerUpdate();
+        },
+
+        playerUpdate() {
+            this.a = !this.a;
+            this.updCount++;
         }
     }
 }

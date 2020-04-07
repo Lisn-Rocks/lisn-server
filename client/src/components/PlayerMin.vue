@@ -1,7 +1,7 @@
 <template>
     <section class="player-minimized" v-bind:class="{ shown: isShown }">
         <div class="progress-bar">
-            <div class="progress" v-bind:style="{ width: progress * 100 + '%' }"/>
+            <div class="progress" v-bind:style="{ width: progress }"/>
         </div>
 
         <div class="song">
@@ -11,7 +11,7 @@
             </div>
 
             <div class="song-control" v-on:click="$emit('toggle')">
-                <i class="material-icons">{{ action }}_circle_filled</i>
+                <i class="material-icons">{{ action }}</i>
             </div>
         </div>
     </section>
@@ -23,16 +23,34 @@ export default {
 
     props: {
         isShown: Boolean,
-        progress: Number,
-        paused: Boolean,
+        currentSong: HTMLAudioElement,
         currentSongInfo: Object,
     },
 
-    data() {
-        return {
-            action: this.paused? "play" : "pause"
+    created() {
+        this.currentSong.addEventListener(
+            'timeupdate', () => this.$emit('upd')
+        );
+    },
+
+    watch: {
+        currentSongInfo: function() {
+            this.currentSong.addEventListener(
+                'timeupdate', () => this.$emit('upd')
+            );  
         }
-    }
+    },
+
+    computed: {
+        progress: function() {
+            let cs = this.currentSong;
+            return cs.currentTime / cs.duration * 100 + '%';
+        },
+
+        action: function() {
+            return this.currentSong.paused? 'play_arrow' : 'pause';
+        }
+    },
 }
 </script>
 
