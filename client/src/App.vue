@@ -55,7 +55,7 @@ export default {
     data() {
         return {
             PROTO: 'http://',
-            ROUTE: '1b0f69e6.ngrok.io', // must be changed appropriately
+            ROUTE: 'f1d3263c.ngrok.io', // must be changed appropriately
 
             tabs: {
                 Queue: {

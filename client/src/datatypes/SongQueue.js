@@ -3,6 +3,9 @@ export function SongQueue() {
     // q contains songs in the order they were added.
     this.q = [];
 
+    // count is used to assign unique QIDs to the songs being added
+    this.count = 0;
+
     // repeat signifies the repeat mode of the SongQueue.
     // There are 3 such modes:
     //
@@ -27,12 +30,14 @@ export function SongQueue() {
     }
 
     this.push = function(song) {
-        song.qid = this.q.length;
+        song.qid = this.count++;
         this.q.push(song);
     };
-
+    
     this.prev = function() {
-        alert("prev");
+        /* eslint-disable no-console */
+        console.log("prev");
+        /* eslint-enable no-console */
         switch (this.repeat) {
         case -1:
         case 1:
@@ -40,7 +45,7 @@ export function SongQueue() {
             /* falls through */
 
         case 0:
-            this.goto(this.q[this.q.length - 1].qid);
+            this.goto(this.get(this.q.length - 1).qid);
         }
     };
 
@@ -62,10 +67,13 @@ export function SongQueue() {
     };
 
     this.goto = function(qid) {
-        while (this.q[0].qid != qid)
+        while (this.get(0).qid != qid)
             this.next();
     };
 
+    // moveon is used to automatically go to the next song in the Queue when the
+    // current one is over. Obviously, it only ever plays the next song if
+    // repeat mode is not set to 'repeat one song'.
     this.moveon = function() {
         if (this.repeat === -1 || this.repeat === 0)
             this.next();
