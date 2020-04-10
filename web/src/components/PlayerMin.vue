@@ -7,8 +7,7 @@
         />
 
         <div class="song">
-            <div class="album-cover" id="album-cover-playermin"
-                v-bind:style="coverStyle"/>
+            <div class="album-cover" v-bind:style="coverStyle"/>
 
             <div class="song-info">
                 <h4 class="song-title">{{ currentSongInfo.name }}</h4>
@@ -43,14 +42,6 @@ export default {
         currentSong: HTMLAudioElement,
         currentSongInfo: Object,
         currentAlbumCoverURL: String,
-    },
-
-    created() {
-        //let cover = document.getElementById('album-cover-playermin');
-        //cover.style.backgroundImage = `url("${this.currentAlbumCoverURL}")`;
-
-        // eslint-disable-next-line
-        //console.log(cover.style.backgroundImage);
     },
 
     computed: {
@@ -129,4 +120,3 @@ export default {
     display: block !important;
 }
 </style>
-
