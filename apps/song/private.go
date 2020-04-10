@@ -6,11 +6,9 @@ import (
     "net/http"
     "log"
     "database/sql"
-    "path"
     "strings"
     "strconv"
     "errors"
-    "fmt"
     "os"
     "io"
 )
@@ -90,12 +88,10 @@ func getArtistName(artistid int, db *sql.DB) (name string, err error) {
 
 
 
-func serveFileFromFolder(
+func serveFile(
     w http.ResponseWriter, r *http.Request, logr *log.Logger,
-    folder string, songid int, extension string,
+    filepath string,
 ) {
-    filepath := path.Join( folder, fmt.Sprintf("%d%s", songid, extension) )
-
     if _, err := os.Stat(filepath); os.IsNotExist(err) {
         logr.Printf("Cannot serve. File '%s' not found in filesystem", filepath)
 

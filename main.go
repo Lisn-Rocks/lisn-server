@@ -100,6 +100,9 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     case "cover":
         song.ServeCover(w, r, db, logr)
 
+    case "covermin":
+        song.ServeCoverMin(w, r, db, logr)
+
     case "info":
         song.ServeJSON(w, r, db, logr)
 

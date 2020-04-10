@@ -87,7 +87,7 @@ export default {
 
     computed: {
         currentAlbumCoverURL: function() {
-            return this.PROTO + this.ROUTE + '/cover/' +
+            return this.PROTO + this.ROUTE + '/covermin/' +
                 this.currentSongInfo().songid;
         },
     },

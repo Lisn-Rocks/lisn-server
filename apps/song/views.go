@@ -7,7 +7,6 @@ import (
 	"io"
 	"log"
 	"path"
-	"os"
 	"math/rand"
 	"net/http"
 
@@ -45,7 +44,11 @@ func ServeByID(
 	}
 
 	extension, _ := getSongExtension(songid, db)
-	serveFileFromFolder(w, r, logr, config.SongsFolder, songid, extension)
+	filepath := path.Join(
+		config.SongsFolder,
+		fmt.Sprintf("%d%s", songid, extension),
+	)
+	serveFile(w, r, logr, filepath)
 }
 
 // ServeRandom serves one random song when called by generating a random song ID
@@ -103,20 +106,49 @@ func ServeCover(
 
 	filepath := path.Join(
 		config.AlbumsFolder,
+		fmt.Sprintf("%d%s", albumid, extension),
+	)
+	serveFile(w, r, logr, filepath)
+}
+
+// ServeCoverMin serves song's minimized cover image by its database ID.
+//
+// Example URL:
+//
+//     http://localhost:8000/cover/42
+//
+func ServeCoverMin(
+	w http.ResponseWriter, r *http.Request,
+	db *sql.DB, logr *log.Logger,
+) {
+	id, err := parseIDFromURL(r)
+
+	if err != nil {
+		logr.Print("Cannot convert ID specified in URL to int")
+
+		w.WriteHeader(http.StatusForbidden)
+		io.WriteString(w, "400 forbidden")
+
+		return
+	}
+
+	if !songExists(id, db) {
+		logr.Print("Song with given ID does not exist in the database")
+
+		w.WriteHeader(http.StatusNotFound)
+		io.WriteString(w, "404 song not found in database")
+
+		return
+	}
+
+	albumid, _ := getAlbumID(id, db)
+	extension, _ := getAlbumExtension(albumid, db)
+
+	filepath := path.Join(
+		config.AlbumsFolder,
 		fmt.Sprintf("%d-min%s", albumid, extension),
 	)
-
-    if _, err := os.Stat(filepath); os.IsNotExist(err) {
-        logr.Printf("Cannot serve. File '%s' not found in filesystem", filepath)
-
-        w.WriteHeader(http.StatusNotFound)
-        io.WriteString(w, "404 file not found")
-
-        return
-    }
-
-    logr.Printf("Serving file %s", filepath)
-    http.ServeFile(w, r, filepath)
+	serveFile(w, r, logr, filepath)
 }
 
 // ServeJSON function serves song data in JSON file. Song's database ID must be
