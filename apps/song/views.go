@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"path"
+	"os"
 	"math/rand"
 	"net/http"
 
@@ -98,7 +100,23 @@ func ServeCover(
 
 	albumid, _ := getAlbumID(id, db)
 	extension, _ := getAlbumExtension(albumid, db)
-	serveFileFromFolder(w, r, logr, config.AlbumsFolder, albumid, extension)
+
+	filepath := path.Join(
+		config.AlbumsFolder,
+		fmt.Sprintf("%d-min%s", albumid, extension),
+	)
+
+    if _, err := os.Stat(filepath); os.IsNotExist(err) {
+        logr.Printf("Cannot serve. File '%s' not found in filesystem", filepath)
+
+        w.WriteHeader(http.StatusNotFound)
+        io.WriteString(w, "404 file not found")
+
+        return
+    }
+
+    logr.Printf("Serving file %s", filepath)
+    http.ServeFile(w, r, filepath)
 }
 
 // ServeJSON function serves song data in JSON file. Song's database ID must be

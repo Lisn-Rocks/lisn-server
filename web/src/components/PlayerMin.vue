@@ -7,6 +7,9 @@
         />
 
         <div class="song">
+            <div class="album-cover" id="album-cover-playermin"
+                v-bind:style="coverStyle"/>
+
             <div class="song-info">
                 <h4 class="song-title">{{ currentSongInfo.name }}</h4>
                 <h6 class="song-artist">{{ currentSongInfo.artist }}</h6>
@@ -39,9 +42,22 @@ export default {
         isShown: Boolean,
         currentSong: HTMLAudioElement,
         currentSongInfo: Object,
+        currentAlbumCoverURL: String,
+    },
+
+    created() {
+        //let cover = document.getElementById('album-cover-playermin');
+        //cover.style.backgroundImage = `url("${this.currentAlbumCoverURL}")`;
+
+        // eslint-disable-next-line
+        //console.log(cover.style.backgroundImage);
     },
 
     computed: {
+        coverStyle: function() {
+            return `background-image: url('${this.currentAlbumCoverURL}');`;
+        },
+
         action: function() {
             return this.currentSong.paused? 'play_arrow' : 'pause';
         }
@@ -72,7 +88,14 @@ export default {
     display: flex;
     height: var(--player-minimized-height);
     color: white;
-    padding: 0 var(--standard-horizontal-padding);
+}
+
+.player-minimized .song .album-cover {
+    width: var(--player-minimized-height);
+    height: var(--player-minimized-height);
+    margin-right: 10px;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .player-minimized .song .song-info {
@@ -95,8 +118,7 @@ export default {
 
 .player-minimized .song .song-control {
     cursor: pointer;
-    padding: 0 10px;
-    margin-right: -15px;
+    padding: 0 10px 0 var(--standard-horizontal-padding);
 }
 .player-minimized .song .song-control i {
     line-height: var(--player-minimized-height);
@@ -107,3 +129,4 @@ export default {
     display: block !important;
 }
 </style>
+

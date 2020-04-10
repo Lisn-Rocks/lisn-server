@@ -24,7 +24,8 @@
         <PlayerMin 
             v-bind:isShown="currentSongQID > -1"
             v-bind:currentSong="currentSong"
-            v-bind:currentSongInfo="currentSongInfo"
+            v-bind:currentSongInfo="currentSongInfo()"
+            v-bind:currentAlbumCoverURL="currentAlbumCoverURL"
             v-on:toggle="toggle"
             v-on:upd="playerUpdate"
             :key="a"
@@ -71,7 +72,6 @@ export default {
             activeTabID: 0,
             currentSongQID: -1,
             currentSong: new Audio(),
-            currentSongInfo: {},
 
             // The SongQueue is filled with random songs from server by the
             // fetchQueue method.
@@ -83,6 +83,13 @@ export default {
 
     created() {
         this.fetchQueue();
+    },
+
+    computed: {
+        currentAlbumCoverURL: function() {
+            return this.PROTO + this.ROUTE + '/cover/' +
+                this.currentSongInfo().songid;
+        },
     },
 
     methods: {
@@ -112,11 +119,14 @@ export default {
             }
         },
 
+        currentSongInfo: function() {
+            return this.queue.get(0);
+        },
+
         goto(songQID) {
             this.queue.goto(songQID);
 
             this.currentSongQID = songQID;
-            this.currentSongInfo = this.queue.get(0);
 
             this.fetchAndPlay(this.queue.get(0).songid);
             this.playerUpdate();
@@ -145,11 +155,7 @@ export default {
 }
 
 :root {
-    /* Scaling Factor (uncomment the proper one) */
-    /* Windows */
-    /* --scaling-factor: 0.64; */
-
-    /* Linux | UNIX | Darwin */
+    /* Scaling Factor */
     --scaling-factor: 0.64;
 
     /* Color Palette */
