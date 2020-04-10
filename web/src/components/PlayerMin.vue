@@ -1,8 +1,10 @@
 <template>
     <section class="player-minimized" v-bind:class="{ shown: isShown }">
-        <div class="progress-bar">
-            <div class="progress" v-bind:style="{ width: progress }"/>
-        </div>
+        <ProgressBarMin 
+            v-bind:currentSong="currentSong"
+            v-on:upd="upd"
+            :key="b"
+        />
 
         <div class="song">
             <div class="song-info">
@@ -18,8 +20,20 @@
 </template>
 
 <script>
+import ProgressBarMin from './ProgressBarMin.vue';
+
 export default {
     name: 'PlayerMin',
+
+    components: {
+        ProgressBarMin
+    },
+
+    data() {
+        return {
+            b: false
+        }
+    },
 
     props: {
         isShown: Boolean,
@@ -27,22 +41,17 @@ export default {
         currentSongInfo: Object,
     },
 
-    created() {
-        this.currentSong.addEventListener(
-            'timeupdate', () => this.$emit('upd')
-        );
-    },
-
     computed: {
-        progress: function() {
-            let cs = this.currentSong;
-            return cs.currentTime / cs.duration * 100 + '%';
-        },
-
         action: function() {
             return this.currentSong.paused? 'play_arrow' : 'pause';
         }
     },
+
+    methods: {
+        upd: function() {
+            this.b = !this.b;
+        }
+    }
 }
 </script>
 
@@ -57,16 +66,6 @@ export default {
     /* cursor: pointer; */
     background-color: var(--main-dark-color);
     display: none;
-}
-
-.player-minimized .progress-bar {
-    width: 100%;
-    height: 3px;
-    background-color: var(--secondary-white);
-}
-.player-minimized .progress-bar .progress {
-    height: 100%;
-    background-color: var(--accent-color);
 }
 
 .player-minimized .song {

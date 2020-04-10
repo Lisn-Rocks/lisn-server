@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import SongTile from './SongTile.vue'
+import SongTile from './SongTile.vue';
 
 export default {
     name: 'Queue',
