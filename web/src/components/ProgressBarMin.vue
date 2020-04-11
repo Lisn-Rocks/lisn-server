@@ -12,12 +12,6 @@ export default {
         currentSong: HTMLAudioElement
     },
 
-    created() {
-        this.currentSong.addEventListener(
-            'timeupdate', () => this.$emit('upd')
-        );
-    },
-    
     computed: {
         progress: function() {
             let cs = this.currentSong;

@@ -1,10 +1,6 @@
 <template>
     <section class="player-minimized" v-bind:class="{ shown: isShown }">
-        <ProgressBarMin 
-            v-bind:currentSong="currentSong"
-            v-on:upd="upd"
-            :key="b"
-        />
+        <ProgressBarMin v-bind:currentSong="currentSong" :key="b"/>
 
         <div class="song">
             <div class="album-cover" v-bind:style="coverStyle"/>
@@ -54,8 +50,14 @@ export default {
         }
     },
 
+    created() {
+        this.currentSong.addEventListener(
+            'timeupdate', () => this.progressBarUpdate()
+        );
+    },
+
     methods: {
-        upd: function() {
+        progressBarUpdate: function() {
             this.b = !this.b;
         }
     }

@@ -24,10 +24,9 @@
         <PlayerMin 
             v-bind:isShown="currentSongQID > -1"
             v-bind:currentSong="currentSong"
-            v-bind:currentSongInfo="currentSongInfo()"
+            v-bind:currentSongInfo="currentSongInfo"
             v-bind:currentAlbumCoverURL="currentAlbumCoverURL"
             v-on:toggle="toggle"
-            v-on:upd="playerUpdate"
             :key="a"
         />
 
@@ -88,7 +87,11 @@ export default {
     computed: {
         currentAlbumCoverURL: function() {
             return this.PROTO + this.ROUTE + '/covermin/' +
-                this.currentSongInfo().songid;
+                this.currentSongInfo.songid;
+        },
+
+        currentSongInfo: function() {
+            return this.queue.get(0);
         },
     },
 
@@ -112,6 +115,13 @@ export default {
             this.currentSong = new Audio(this.PROTO + this.ROUTE + '/song/' + songID);
             this.currentSong.type = 'audio/mp3';
 
+            this.currentSong.addEventListener(
+                'pause', () => this.playerUpdate()
+            );
+            this.currentSong.addEventListener(
+                'play', () => this.playerUpdate()
+            );
+
             try {
                 await this.currentSong.play();
             } catch (err) {
@@ -119,24 +129,15 @@ export default {
             }
         },
 
-        currentSongInfo: function() {
-            return this.queue.get(0);
-        },
-
         goto(songQID) {
             this.queue.goto(songQID);
-
             this.currentSongQID = songQID;
-
             this.fetchAndPlay(this.queue.get(0).songid);
-            this.playerUpdate();
         },
 
         toggle() {
-            if (this.currentSong.paused)
-                this.currentSong.play();
+            if (this.currentSong.paused) this.currentSong.play();
             else this.currentSong.pause();
-            this.playerUpdate();
         },
 
         playerUpdate() {
