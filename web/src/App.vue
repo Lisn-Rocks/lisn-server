@@ -115,15 +115,9 @@ export default {
             this.currentSong = new Audio(this.PROTO + this.ROUTE + '/song/' + songID);
             this.currentSong.type = 'audio/mp3';
 
-            this.currentSong.addEventListener(
-                'pause', () => this.playerUpdate()
-            );
-            this.currentSong.addEventListener(
-                'play', () => this.playerUpdate()
-            );
-            this.currentSong.addEventListener(
-                'ended', () => this.moveon()
-            );
+            this.currentSong.addEventListener('pause', () => this.playerUpdate());
+            this.currentSong.addEventListener('play', () => this.playerUpdate());
+            this.currentSong.addEventListener('ended', () => this.moveon());
 
             try {
                 await this.currentSong.play();
