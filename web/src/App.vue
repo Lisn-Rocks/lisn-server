@@ -121,6 +121,9 @@ export default {
             this.currentSong.addEventListener(
                 'play', () => this.playerUpdate()
             );
+            this.currentSong.addEventListener(
+                'ended', () => this.moveon()
+            );
 
             try {
                 await this.currentSong.play();
@@ -131,8 +134,17 @@ export default {
 
         goto(songQID) {
             this.queue.goto(songQID);
-            this.currentSongQID = songQID;
-            this.fetchAndPlay(this.queue.get(0).songid);
+            this.changeSong();
+        },
+
+        moveon() {
+            this.queue.moveon();
+            this.changeSong();
+        },
+
+        changeSong() {
+            this.currentSongQID = this.currentSongInfo.qid;
+            this.fetchAndPlay(this.currentSongInfo.songid);
         },
 
         toggle() {
