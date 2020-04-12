@@ -1,6 +1,6 @@
-# Lisn Music Streaming
+# [Lisn Music Streaming](lisn.rocks)
 
-Flip Spotify! Listen to the music you like -- however you like it!
+**Lisn** is the music that *rocks*!
 
 
 
@@ -17,6 +17,10 @@ can try installing it through your package manager of choice like this:
 
 ```bash
 apt-get install golang-go
+
+# or
+
+pacman -S go
 ```
 
 Alternatively, you can download [Go binary distributions][bin], go through the 
