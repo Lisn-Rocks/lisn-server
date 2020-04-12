@@ -1,4 +1,4 @@
-# [Lisn Music Streaming](lisn.rocks)
+# [Lisn Music Streaming](http://lisn.rocks)
 
 **Lisn** is the music that *rocks*!
 
