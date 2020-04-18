@@ -1,13 +1,13 @@
-package public
+package pub
 
 import (
     "log"
     "net/http"
     "path"
     "os"
-    "io"
 
     "github.com/sharpvik/Lisn/config"
+    "github.com/sharpvik/Lisn/util"
 )
 
 
@@ -20,17 +20,14 @@ import (
 //     http://localhost:8000/public/favicon.ico
 //
 func ServeFile(w http.ResponseWriter, r *http.Request, logr *log.Logger) {
-    fullPath := path.Join(config.RootFolder, r.URL.String())
+    url := r.URL.String()
+    fullPath := path.Join(config.RootFolder, url)
 
     if _, err := os.Stat(fullPath); os.IsNotExist(err) {
-        logr.Printf("Cannot serve. Path '%s' not found", fullPath)
-
-        w.WriteHeader(http.StatusNotFound)
-        io.WriteString(w, "404 file not found")
-
+        util.FailWithCode(w, r, http.StatusNotFound, logr)
         return
     }
 
-    logr.Printf("Serving file %s", fullPath)
+    logr.Printf("Serving file <Root>%s", url)
     http.ServeFile(w, r, fullPath)
 }

@@ -1,4 +1,4 @@
-package song
+package api
 
 // This file contains package private functions.
 
@@ -10,7 +10,8 @@ import (
     "strconv"
     "errors"
     "os"
-    "io"
+
+    "github.com/sharpvik/Lisn/util"
 )
 
 
@@ -18,13 +19,13 @@ import (
 func parseIDFromURL(r *http.Request) (id int, err error) {
     split := strings.Split( r.URL.String(), "/" )[1:]
 
-    if len(split) != 2 {
+    if len(split) != 3 {
         err = errors.New("Incorrect number of elements in a split")
         return
     }
 
     // Atoi used to prevent injections. Only numbers pass!
-    id, err = strconv.Atoi(split[1])
+    id, err = strconv.Atoi(split[2])
 
     return
 }
@@ -93,14 +94,10 @@ func serveFile(
     filepath string,
 ) {
     if _, err := os.Stat(filepath); os.IsNotExist(err) {
-        logr.Printf("Cannot serve. File '%s' not found in filesystem", filepath)
-
-        w.WriteHeader(http.StatusNotFound)
-        io.WriteString(w, "404 file not found")
-
+        util.FailWithCode(w, r, http.StatusNotFound, logr)
         return
     }
-
+    
     logr.Printf("Serving file %s", filepath)
     http.ServeFile(w, r, filepath)
 }

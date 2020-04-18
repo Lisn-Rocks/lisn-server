@@ -1,23 +1,23 @@
-package song
+package api
 
 import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"path"
 	"math/rand"
 	"net/http"
 
 	"github.com/sharpvik/Lisn/config"
+	"github.com/sharpvik/Lisn/util"
 )
 
 // ServeByID function is used to serve songs using their databse ID.
 //
 // Example URL:
 //
-//     http://localhost:8000/song/42
+//     http://localhost:8000/api/song/42
 //
 func ServeByID(
 	w http.ResponseWriter, r *http.Request,
@@ -27,19 +27,13 @@ func ServeByID(
 
 	if err != nil {
 		logr.Print("Cannot convert song id specified in URL to int")
-
-		w.WriteHeader(http.StatusForbidden)
-		io.WriteString(w, "400 forbidden")
-
+		util.FailWithCode(w, r, http.StatusForbidden, logr)
 		return
 	}
 
 	if !songExists(songid, db) {
 		logr.Print("Song with given ID does not exist in the database")
-
-		w.WriteHeader(http.StatusNotFound)
-		io.WriteString(w, "404 song not found in database")
-
+		util.FailWithCode(w, r, http.StatusNotFound, logr)
 		return
 	}
 
@@ -53,6 +47,11 @@ func ServeByID(
 
 // ServeRandom serves one random song when called by generating a random song ID
 // and redirecting to the URL that invokes ServeByID.
+//
+// Example URL:
+//
+//     http://localhost:8000/api/random
+//
 func ServeRandom(
 	w http.ResponseWriter, r *http.Request,
 	db *sql.DB, logr *log.Logger,
@@ -66,7 +65,7 @@ func ServeRandom(
     
 	http.Redirect(
 		w, r,
-		fmt.Sprintf("/info/%d", songid),
+		fmt.Sprintf("/api/info/%d", songid),
 		http.StatusSeeOther,
 	)
 }
@@ -75,7 +74,7 @@ func ServeRandom(
 //
 // Example URL:
 //
-//     http://localhost:8000/cover/42
+//     http://localhost:8000/api/cover/42
 //
 func ServeCover(
 	w http.ResponseWriter, r *http.Request,
@@ -85,19 +84,13 @@ func ServeCover(
 
 	if err != nil {
 		logr.Print("Cannot convert ID specified in URL to int")
-
-		w.WriteHeader(http.StatusForbidden)
-		io.WriteString(w, "400 forbidden")
-
+		util.FailWithCode(w, r, http.StatusForbidden, logr)
 		return
 	}
 
 	if !songExists(id, db) {
 		logr.Print("Song with given ID does not exist in the database")
-
-		w.WriteHeader(http.StatusNotFound)
-		io.WriteString(w, "404 song not found in database")
-
+		util.FailWithCode(w, r, http.StatusNotFound, logr)
 		return
 	}
 
@@ -115,7 +108,7 @@ func ServeCover(
 //
 // Example URL:
 //
-//     http://localhost:8000/cover/42
+//     http://localhost:8000/api/covermin/42
 //
 func ServeCoverMin(
 	w http.ResponseWriter, r *http.Request,
@@ -125,19 +118,13 @@ func ServeCoverMin(
 
 	if err != nil {
 		logr.Print("Cannot convert ID specified in URL to int")
-
-		w.WriteHeader(http.StatusForbidden)
-		io.WriteString(w, "400 forbidden")
-
+		util.FailWithCode(w, r, http.StatusForbidden, logr)
 		return
 	}
 
 	if !songExists(id, db) {
 		logr.Print("Song with given ID does not exist in the database")
-
-		w.WriteHeader(http.StatusNotFound)
-		io.WriteString(w, "404 song not found in database")
-
+		util.FailWithCode(w, r, http.StatusNotFound, logr)
 		return
 	}
 
@@ -156,7 +143,7 @@ func ServeCoverMin(
 //
 // Example URL:
 //
-//     http://localhost:8000/info/59
+//     http://localhost:8000/api/info/59
 //
 func ServeJSON(
 	w http.ResponseWriter,
@@ -168,19 +155,13 @@ func ServeJSON(
 
 	if err != nil {
 		logr.Print("Cannot convert ID specified in URL to int")
-
-		w.WriteHeader(http.StatusForbidden)
-		io.WriteString(w, "400 forbidden")
-
+		util.FailWithCode(w, r, http.StatusForbidden, logr)
 		return
 	}
 
 	if !songExists(songid, db) {
 		logr.Print("Song with given ID does not exist in the database")
-
-		w.WriteHeader(http.StatusNotFound)
-		io.WriteString(w, "404 song not found in database")
-
+		util.FailWithCode(w, r, http.StatusNotFound, logr)
 		return
 	}
 
@@ -199,10 +180,7 @@ func ServeJSON(
 
 	if err != nil {
 		logr.Print("Failed to obtain artist or album name")
-
-		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, "500 internal server error")
-
+		util.FailWithCode(w, r, http.StatusInternalServerError, logr)
 		return
 	}
 
@@ -223,7 +201,11 @@ func ServeJSON(
 	}
 
 	// Remove header below before building for production.
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	// I am not sure whether this header is necessary anyways, so I'll keep it
+	// commented out for some time until it is clear.
+	//
+	//     w.Header().Set("Access-Control-Allow-Origin", "*")
+	//
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsn)
 }

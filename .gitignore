@@ -9,7 +9,7 @@ node_modules
 
 # builds
 Lisn
-public/*
+pub/lisn
 
 # local env files
 .env.local

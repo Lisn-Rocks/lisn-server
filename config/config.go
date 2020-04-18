@@ -9,6 +9,9 @@ import (
 // These are project-level constants used by various packages. They serve to
 // improve code scalability and ease of deployment.
 const (
+    // Host specifies server host address.
+    Host = "localhost"
+
     // Port specifies server port.
     Port = ":8000"
 
@@ -37,7 +40,16 @@ var (
     // PublicFolder contains static files that are to be served publically.
     // These files do not contain any sensitive data and thus we don't really
     // care if they can be accessed arbitrarily without any identity checkup.
-    PublicFolder = path.Join(RootFolder, "public")
+    PublicFolder = path.Join(RootFolder, "pub")
+
+    // FailFolder contains static HTML files that are sent to user whenever some
+    // sort of failure occurs. It has files named '<ERROR_CODE>.html' for every
+    // error code utilized by the app.
+    FailFolder = path.Join(PublicFolder, "fail")
+
+    // LisnFolder contains static files that, in their entirity, make up the
+    // whole of the Lisn Music Streaming App.
+    LisnFolder = path.Join(PublicFolder, "lisn")
 )
 
 

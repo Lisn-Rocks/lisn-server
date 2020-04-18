@@ -1,4 +1,4 @@
-package song
+package api
 
 
 type song struct {

@@ -55,7 +55,7 @@ export default {
     data() {
         return {
             PROTO: 'http://',
-            ROUTE: '7c5c2b1f.ngrok.io', // must be changed appropriately
+            ROUTE: 'localhost:8000', // must be changed appropriately
 
             tabs: {
                 Queue: {
@@ -86,7 +86,7 @@ export default {
 
     computed: {
         currentAlbumCoverURL: function() {
-            return this.PROTO + this.ROUTE + '/covermin/' +
+            return this.PROTO + this.ROUTE + '/api/covermin/' +
                 this.currentSongInfo.songid;
         },
 
@@ -99,7 +99,7 @@ export default {
         fetchQueue() {
             for (let i = 0; i < 5; i++) {
                 fetch(
-                    this.PROTO + this.ROUTE + '/random',
+                    this.PROTO + this.ROUTE + '/api/random',
                     { method: 'GET', redirect: 'follow' }
                 ).then( response => response.json() )
                 .then(song => {
@@ -112,7 +112,7 @@ export default {
         async fetchAndPlay(songID) {
             this.currentSong.pause();
 
-            this.currentSong = new Audio(this.PROTO + this.ROUTE + '/song/' + songID);
+            this.currentSong = new Audio(this.PROTO + this.ROUTE + '/api/song/' + songID);
             this.currentSong.type = 'audio/mp3';
 
             this.currentSong.addEventListener('pause', () => this.playerUpdate());
