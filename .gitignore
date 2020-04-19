@@ -1,7 +1,7 @@
 # files and storage
 storage
 config/secret.go
-design/db/dump
+sql/dump.sql
 
 # big folders
 .DS_Store

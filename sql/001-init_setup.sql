@@ -1,5 +1,5 @@
 -- To apply these changes, run:
--- psql -f init_setup.sql Lisn
+-- psql -f 001-init_setup.sql <database name>
 
 
 CREATE TABLE artists (

@@ -1,160 +1,187 @@
-# [Lisn Music Streaming](http://lisn.rocks)
+# Lisn Server
 
-**Lisn** is the music that *rocks*!
+Lisn Server allows you to manipulate database and serve files related to the
+**[Lisn Music Streaming Service]**.
+
+[Lisn Music Streaming Service]: https://github./com/sharpvik/Lisn
 
 
 
 ## Getting Started
 
-If you want to host Lisn on your own server, you are absolutely welcome to do
-so! 
-
-
-### Prerequisites
+### Install Go
 
 To compile from source, you need to have **Go** installed on your machine! You
 can try installing it through your package manager of choice like this:
 
 ```bash
+# Using apt manager (Debian, Ubuntu, and related)
 apt-get install golang-go
 
-# or
-
+# Using pacman manager (Arch, Manjaro and related)
 pacman -S go
+
+# Using yum manager (Fedora, CentOS, and related)
+yum install golang
 ```
 
-Alternatively, you can download [Go binary distributions][bin], go through the 
-[installation process][install], and don't forget to [set the `$GOPATH`
-environment variable][GOPATH]!
+Alternatively, you can download [Go binary distributions][bin], and go through
+the [installation process][install].
 
 [bin]: https://golang.org/dl/
 [install]: https://golang.org/doc/install
 [GOPATH]: https://github.com/golang/go/wiki/SettingGOPATH
 
 
-### Configure Go Server Files
+### Dependencies & Config Files
 
-As soon as you have **Go** installed and running on your machine, you can do the
-following:
+As soon as you have **Go** installed and running on your machine, you need to do
+the following:
 
 ```bash
-go get github.com/sharpvik/Lisn
+go get github.com/lib/pq            # required to interface with PostrgreSQL
+go get github.com/sharpvik/Lisn     # Lisn Server source files
 ```
 
 This command will fetch the whole GitHub repo and put it into a specific place
-on your computer. For those, who are new to Go programming, I'll give a hack.
+on your computer.
+
+#### Configure RootFolder
+
+Go to the project's root folder:
 
 ```bash
-go env GOPATH
-# Prints something like /home/username/go on UNIX-based systems.
+cd $(go env GOPATH)/src/github.com/sharpvik/lisn-server
 ```
 
-The above command prints out absolute path to the folder where all Go-related
-things are supposed to be stored. I don't know what that path is for you, so
-here I'll just call it `$GOPATH`. Knowing what your `$GOPATH` is, you can now
-easily locate the newly installed `Lisn` package as follows:
+Once you are in that folder, you'll discover a folder called `pub`. This folder
+is going to contain all public files that your server will serve on demand.
+Actually, there will be another important folder called `storage` which contains
+all the songs and album covers.
+
+These two folders must lie in the same folder which we will call `RootFolder`.
+You may use this project's root folder as your `RootFolder` but you don't have
+to. You can place `RootFolder` wherever you have permission to create folders.
 
 ```bash
-cd $GOPATH/src/github.com/sharpvik/Lisn
-
-# Remember, $GOPATH (here and below) is not actually an environment variable,
-# it's just a placeholder for your own Go folder and is supposed to be
-# substituted with the path printed by `go env GOPATH`.
+# For example:
+~$ mkdir dev
+~$ ls
+go/     dev/
+~$ cd dev
+~/dev$ mkdir lisn-root
+~/dev$ mv $(go env GOPATH)/src/github.com/sharpvik/lisn-server/pub lisn-root/
+~/dev$ cd lisn-root
+~/dev/lisn-root$ mkdir storage
+~/dev/lisn-root$ cd storage
+~/dev/lisn-root/storage$ mkdir albums songs
+~/dev/lisn-root/storage$ cd ../../
+~/dev$ tree lisn-root
+lisn-root
+├───pub
+│   └───fail
+└───storage
+    ├───albums
+    └───songs
 ```
 
-You can also try ...
+After you setup your `RootFolder`, you'll assign its absolute path to the
+`RootFolder` constant in `lisn-server/config/config.go` file.
 
-```bash
-cd $(go env GOPATH)/src/github.com/sharpvik/Lisn
-```
-
-... instead of copy-pasting the output from `go env GOPATH` by hand.
-
-Once you are in that folder, you'll need to change the `config.go` file a notch.
-Edit the `RootFolder` constant in `Lisn/config/config.go` so that it
-reflects the actual path to the `Lisn` folder on your machine.
-
-On my machine it looks like this:
+On my machine it looks like this (because I use this project's root folder as my
+`RootFolder`):
 
 ```go
-RootFolder = "/home/sharpvik/go/src/github.com/sharpvik/Lisn"
-
-// My $GOPATH is set to /home/sharpvik/go so the string in RootFolder
-// reflects the exact location of the Lisn project folder on my machine.
-// You need to change this string to be
-//
-//     RootFolder = "$YOUR_GOPATH/src/github.com/sharpvik/Lisn"
-//
+RootFolder = "/home/sharpvik/go/src/github.com/sharpvik/lisn-server"
 ```
 
-Now, your **Go** server is good to go, however we still have to build the client
-side!
+#### Configure Database Constants
 
+Create `lisn-server/config/secret.go`. This file is part of the `package config`
+and it is supposed to contain constants that will allow you to connect to the
+database. Here's how it looks like (you can literally `copy+paste` all of the
+following in your newly created `secret.go` and substitute with your values):
 
-### Build the Client Side
+```go
+package config
 
-First of all, check that the line
-
-```js
-publicPath: '/public', // uncomment before building for deployment
+const (
+    DBhost = "localhost"
+    DBport = 5432
+    DBuser = "user"
+    DBpassword = "***"
+    DBname = "Lisn"
+)
 ```
 
-in `Lisn/client/vue.config.js` is uncommented! 
+Now, your **Go** server is good to go, however you still need to build the
+client side if you want to use [Lisn Web App]. Follow the link -- you'll find
+all deployment instructions there.
 
-Also, change `ROUTE` in `Lisn/client/src/App.vue`. The `ROUTE` is an IP address 
-and your server's port on LAN or WLAN you use for testing (e.g. 
-`120.116.14.25:8000`) or a proper web link like `my-site.com`.
+[Lisn Web App]: https://github.com/sharpvik/lisn-web-app
 
-Then, run the following commands:
+
+### Database
+
+Lisn is a fairly young project. There isn't a way to quickly upload albums onto
+the server and register them in the database. I had to do it myself via the
+`psql` prompt while simultaneously saving files to `pub`. You can develop your
+own mechanisms if you wish, and if you do, please share!
+
+
+### Run, Build or Install
 
 ```bash
-cd $GOPATH/src/github.com/sharpvik/Lisn
+cd $(go env GOPATH)/src/github.com/sharpvik/lisn-server
 
-npm install     # to install node_modules from package-lock.json
-npm run build   # to compile & build client side (outputs into Lisn/public)
-cd ..           # to go back to project's root folder
-```
+go run      # compiles and runs without creating any binary executables
 
-Run the following command from the project's root folder to start your server.
+go build    # puts binary file called `Lisn` into the project folder
 
-```bash
-go run main.go
-```
-
-It will immediately start serving at `localhost:8000`. To change the port, stop
-the server with `CTRL+C`, edit the `Port` constant in
-`Lisn/config/config.go`, restart the server.
-
-
-### Build & Install
-
-Go is actually a compiled language, however the `go run` command doesn't produce
-any visible executable files. To compile `Lisn`, you can
-
-```bash
-cd $GOPATH/src/github.com/sharpvik/Lisn
-
-go build    # puts binary `Lisn` file into the project folder
-
-# or alternatively, use
-
-go install  # creates binary file at $GOPATH/bin/Lisn
+go install  # creates binary file at $(go env GOPATH)/bin/Lisn
 ```
 
 
 
-## Contributing
+## Contribute
 
-All contributions are welcome and appreciated! I'd be glad to accept your help
-with this project. `CONTRIBUTING.md` will be added in future commits.
+All contributions to the Lisn project are greately appreciated. I know, the
+phrase is a cliché but trust me, any contribution you make
+**creates a ton of difference**.
+
+
+### Ways To Help
+
+**Scout through the [Issues]**, look for the ones you think you can fix and
+*go ahead*.
+
+[Issues]: https://github.com/sharpvik/lisn-server/issues
+
+Found a bug? -- **create a new issue** for the rest of us to see.
+
+And of course, you are always welcome to `fork + git clone`, and then do
+whatever you want. If you think that your version works better than the one we
+have published here -- **issue a pull request**!
+
+
+### Sister Repos
+
+Lisn Server is part of a bigger family. Maybe you could also help with some of
+these:
+
+- [Lisn Web App] - web app written in [Vue.js]
+- [Lisn Design] - all graphics realted stuff
+
+[Vue.js]: https://vuejs.org
+[Lisn Design]: https://github.com/sharpvik/lisn-design
 
 
 
 ## Authors
 
-- **Viktor A. Rozenko Voitenko** - *Initial work* - [sharpvik]
+- **[Viktor Rozenko]** - *Initial work*
 
-[sharpvik]: https://github.com/sharpvik
+[Viktor Rozenko]: https://github.com/sharpvik
 
 
 
