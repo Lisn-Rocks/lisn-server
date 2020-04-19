@@ -9,8 +9,8 @@ import (
 	"math/rand"
 	"net/http"
 
-	"github.com/sharpvik/Lisn/config"
-	"github.com/sharpvik/Lisn/util"
+	"github.com/sharpvik/lisn-server/config"
+	"github.com/sharpvik/lisn-server/util"
 )
 
 // ServeByID function is used to serve songs using their databse ID.

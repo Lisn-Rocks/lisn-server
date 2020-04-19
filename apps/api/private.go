@@ -11,7 +11,7 @@ import (
     "errors"
     "os"
 
-    "github.com/sharpvik/Lisn/util"
+    "github.com/sharpvik/lisn-server/util"
 )
 
 

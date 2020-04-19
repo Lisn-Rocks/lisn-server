@@ -9,10 +9,10 @@ import (
 
     _ "github.com/lib/pq"
 
-    "github.com/sharpvik/Lisn/config"
-    "github.com/sharpvik/Lisn/apps/api"
-    "github.com/sharpvik/Lisn/apps/pub"
-    "github.com/sharpvik/Lisn/util"
+    "github.com/sharpvik/lisn-server/config"
+    "github.com/sharpvik/lisn-server/apps/api"
+    "github.com/sharpvik/lisn-server/apps/pub"
+    "github.com/sharpvik/lisn-server/util"
 )
 
 

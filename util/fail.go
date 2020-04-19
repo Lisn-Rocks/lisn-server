@@ -8,7 +8,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/sharpvik/Lisn/config"
+	"github.com/sharpvik/lisn-server/config"
 )
 
 // FailWithCode is used to appropriately respond to user in an event of failure.

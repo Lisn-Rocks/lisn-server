@@ -20,7 +20,7 @@ const (
     // paths of different files on the system.
     //
     // MAKE SURE TO CHANGE IT BEFORE RUNNING THE SERVER ON YOUR MACHINE!
-    RootFolder = "/home/sharpvik/go/src/github.com/sharpvik/Lisn"
+    RootFolder = "/home/sharpvik/Public/Lisn"
 )
 
 

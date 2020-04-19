@@ -8,7 +8,7 @@ sql/dump.sql
 node_modules
 
 # builds
-Lisn
+lisn-server
 pub/lisn
 
 # local env files
