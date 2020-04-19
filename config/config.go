@@ -9,9 +9,6 @@ import (
 // These are project-level constants used by various packages. They serve to
 // improve code scalability and ease of deployment.
 const (
-    // Host specifies server host address.
-    Host = "localhost"
-
     // Port specifies server port.
     Port = ":8000"
 

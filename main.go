@@ -51,12 +51,12 @@ func main() {
     logr = log.New(config.LogWriter, config.LogPrefix, log.Ltime)
 
     server := http.Server{
-        Addr:       fmt.Sprintf("%s%s", config.Host, config.Port),
+        Addr:       config.Port,
         Handler:    &mainHandler{},
         ErrorLog:   logr,
     }
 
-    logr.Printf("Serving at %s%s", config.Host, config.Port)
+    logr.Printf("Serving at PORT %s", config.Port)
     server.ListenAndServe()
 }
 
