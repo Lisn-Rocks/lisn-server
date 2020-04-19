@@ -55,9 +55,13 @@ var (
 
 // The following values are used by the logger. Configure them as you please.
 
+// LogFile contains path to the log file
+var LogFile = path.Join(RootFolder, "log")
+
 // LogWriter must implement Writer and is uded by the logger to know where to
-// write the logs to.
+// write the logs to. Uncomment the one you wish to use.
 var LogWriter = os.Stdout
+// var LogWriter, _ = os.Create(LogFile)
 
 // LogPrefix is a string used by the logger to prefix every log message.
 const LogPrefix = ""

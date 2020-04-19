@@ -51,12 +51,12 @@ func main() {
     logr = log.New(config.LogWriter, config.LogPrefix, log.Ltime)
 
     server := http.Server{
-        Addr:       config.Host + config.Port,
+        Addr:       fmt.Sprintf("%s%s", config.Host, config.Port),
         Handler:    &mainHandler{},
         ErrorLog:   logr,
     }
 
-    logr.Printf("Serving at localhost%s", config.Port)
+    logr.Printf("Serving at %s%s", config.Host, config.Port)
     server.ListenAndServe()
 }
 
@@ -84,7 +84,7 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    if url == "favicon.ico" {
+    if url == "/favicon.ico" {
         url = "/pub/lisn/favicon.ico"
         http.Redirect(w, r, url, http.StatusSeeOther)
         return
