@@ -1,5 +1,4 @@
 # files and storage
-storage
 config/secret.go
 sql/dump.sql
 
