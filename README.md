@@ -136,9 +136,9 @@ cd $(go env GOPATH)/src/github.com/sharpvik/lisn-server
 
 go run      # compiles and runs without creating any binary executables
 
-go build    # puts binary file called `Lisn` into the project folder
+go build    # puts binary file called `lisn-server` into the project folder
 
-go install  # creates binary file at $(go env GOPATH)/bin/Lisn
+go install  # creates binary file at $(go env GOPATH)/bin/lisn-server
 ```
 
 
