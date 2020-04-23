@@ -66,6 +66,9 @@ type mainHandler struct {}
 // ServeHTTP function is the entry point for server's routing mechanisms.
 // It is used to delegate request to a proper handler function.
 func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    w.Headers().Set("Access-Control-Allow-Origin", "*")
+
+
     url := r.URL.String()
     logr.Printf("URL: %s", url)
 
@@ -118,19 +121,19 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         switch app {
         case "song":
             api.ServeByID(w, r, db, logr)
-    
+
         case "random":
             api.ServeRandom(w, r, db, logr)
-    
+
         case "cover":
             api.ServeCover(w, r, db, logr)
-    
+
         case "covermin":
             api.ServeCoverMin(w, r, db, logr)
-    
+
         case "info":
             api.ServeJSON(w, r, db, logr)
-    
+
         default:
             util.FailWithCode(w, r, http.StatusNotFound, logr)
         }

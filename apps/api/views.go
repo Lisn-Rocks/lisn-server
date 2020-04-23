@@ -62,7 +62,7 @@ func ServeRandom(
 	row.Scan(&n)
 
     songid := rand.Intn(n) + 1
-    
+
 	http.Redirect(
 		w, r,
 		fmt.Sprintf("/api/info/%d", songid),
@@ -200,12 +200,6 @@ func ServeJSON(
 		return
 	}
 
-	// Remove header below before building for production.
-	// I am not sure whether this header is necessary anyways, so I'll keep it
-	// commented out for some time until it is clear.
-	//
-	//     w.Header().Set("Access-Control-Allow-Origin", "*")
-	//
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsn)
 }
