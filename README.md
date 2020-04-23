@@ -39,8 +39,8 @@ As soon as you have **Go** installed and running on your machine, you need to do
 the following:
 
 ```bash
-go get github.com/lib/pq            # required to interface with PostrgreSQL
-go get github.com/sharpvik/Lisn     # Lisn Server source files
+go get github.com/lib/pq    # required to interface with PostrgreSQL
+go get github.com/sharpvik/lisn-server  # Lisn Server source files
 ```
 
 This command will fetch the whole GitHub repo and put it into a specific place
@@ -136,9 +136,9 @@ cd $(go env GOPATH)/src/github.com/sharpvik/lisn-server
 
 go run      # compiles and runs without creating any binary executables
 
-go build    # puts binary file called `Lisn` into the project folder
+go build    # puts binary file called `lisn-server` into the project folder
 
-go install  # creates binary file at $(go env GOPATH)/bin/Lisn
+go install  # creates binary file at $(go env GOPATH)/bin/lisn-server
 ```
 
 

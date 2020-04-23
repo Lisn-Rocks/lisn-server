@@ -1,5 +1,4 @@
 # files and storage
-storage
 config/secret.go
 sql/dump.sql
 
@@ -8,7 +7,7 @@ sql/dump.sql
 node_modules
 
 # builds
-Lisn
+lisn-server
 pub/lisn
 
 # local env files

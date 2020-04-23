@@ -6,8 +6,8 @@ import (
     "path"
     "os"
 
-    "github.com/sharpvik/Lisn/config"
-    "github.com/sharpvik/Lisn/util"
+    "github.com/sharpvik/lisn-server/config"
+    "github.com/sharpvik/lisn-server/util"
 )
 
 

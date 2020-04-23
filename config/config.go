@@ -9,9 +9,6 @@ import (
 // These are project-level constants used by various packages. They serve to
 // improve code scalability and ease of deployment.
 const (
-    // Host specifies server host address.
-    Host = "localhost"
-
     // Port specifies server port.
     Port = ":8000"
 
@@ -20,7 +17,7 @@ const (
     // paths of different files on the system.
     //
     // MAKE SURE TO CHANGE IT BEFORE RUNNING THE SERVER ON YOUR MACHINE!
-    RootFolder = "/home/sharpvik/go/src/github.com/sharpvik/Lisn"
+    RootFolder = "/home/sharpvik/Public/Lisn"
 )
 
 
@@ -55,9 +52,13 @@ var (
 
 // The following values are used by the logger. Configure them as you please.
 
+// LogFile contains path to the log file
+var LogFile = path.Join(RootFolder, "log")
+
 // LogWriter must implement Writer and is uded by the logger to know where to
-// write the logs to.
+// write the logs to. Uncomment the one you wish to use.
 var LogWriter = os.Stdout
+// var LogWriter, _ = os.Create(LogFile)
 
 // LogPrefix is a string used by the logger to prefix every log message.
 const LogPrefix = ""

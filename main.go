@@ -9,10 +9,10 @@ import (
 
     _ "github.com/lib/pq"
 
-    "github.com/sharpvik/Lisn/config"
-    "github.com/sharpvik/Lisn/apps/api"
-    "github.com/sharpvik/Lisn/apps/pub"
-    "github.com/sharpvik/Lisn/util"
+    "github.com/sharpvik/lisn-server/config"
+    "github.com/sharpvik/lisn-server/apps/api"
+    "github.com/sharpvik/lisn-server/apps/pub"
+    "github.com/sharpvik/lisn-server/util"
 )
 
 
@@ -51,12 +51,12 @@ func main() {
     logr = log.New(config.LogWriter, config.LogPrefix, log.Ltime)
 
     server := http.Server{
-        Addr:       config.Host + config.Port,
+        Addr:       config.Port,
         Handler:    &mainHandler{},
         ErrorLog:   logr,
     }
 
-    logr.Printf("Serving at localhost%s", config.Port)
+    logr.Printf("Serving at PORT %s", config.Port)
     server.ListenAndServe()
 }
 
@@ -87,7 +87,7 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    if url == "favicon.ico" {
+    if url == "/favicon.ico" {
         url = "/pub/lisn/favicon.ico"
         http.Redirect(w, r, url, http.StatusSeeOther)
         return
