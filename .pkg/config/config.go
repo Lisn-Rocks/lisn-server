@@ -45,14 +45,16 @@ var (
 	// LisnFolder contains static files that, in their entirity, make up the
 	// whole of the Lisn Music Streaming App.
 	LisnFolder = path.Join(PublicFolder, "lisn")
+
+	// LogsFolder contains all the log files related to Lisn Music Streaming
+	// Service activities (including, for example, CD build logs).
+	LogsFolder = path.Join(RootFolder, "logs")
 )
+
 
 // The following values are used by the logger. Configure them as you please.
 
-// LogsFolder contains path to the folder where logs are saved.
-var LogsFolder = path.Join(RootFolder, "logs")
-
-// LogFile is a path to the server log file.
+// LogFile contains path to the log file
 var LogFile = path.Join(LogsFolder, "lisn-server.log")
 
 // LogWriter must implement Writer and is uded by the logger to know where to
