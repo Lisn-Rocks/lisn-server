@@ -30,7 +30,6 @@ the [installation process][install].
 
 [bin]: https://golang.org/dl/
 [install]: https://golang.org/doc/install
-[GOPATH]: https://github.com/golang/go/wiki/SettingGOPATH
 
 
 ### Dependencies & Config Files
@@ -46,73 +45,36 @@ go get github.com/sharpvik/lisn-server  # Lisn Server source files
 This command will fetch the whole GitHub repo and put it into a specific place
 on your computer.
 
-#### Configure RootFolder
+Run the `setup.sh` script. It will create a root folder for all server files at
+`~/Public/lisn` while also unpacking all the config file templates from `.pkg`.
+This is the initial layout of the `~/Public/lisn` folder.
 
-Go to the project's root folder:
-
-```bash
-cd $(go env GOPATH)/src/github.com/sharpvik/lisn-server
-```
-
-Once you are in that folder, you'll discover a folder called `pub`. This folder
-is going to contain all public files that your server will serve on demand.
-Actually, there will be another important folder called `storage` which contains
-all the songs and album covers.
-
-These two folders must lie in the same folder which we will call `RootFolder`.
-You may use this project's root folder as your `RootFolder` but you don't have
-to. You can place `RootFolder` wherever you have permission to create folders.
+#### RootFolder Tree
 
 ```bash
-# For example:
-~$ mkdir dev
-~$ ls
-go/     dev/
-~$ cd dev
-~/dev$ mkdir lisn-root
-~/dev$ mv $(go env GOPATH)/src/github.com/sharpvik/lisn-server/pub lisn-root/
-~/dev$ cd lisn-root
-~/dev/lisn-root$ mkdir storage
-~/dev/lisn-root$ cd storage
-~/dev/lisn-root/storage$ mkdir albums songs
-~/dev/lisn-root/storage$ cd ../../
-~/dev$ tree lisn-root
-lisn-root
-├───pub
-│   └───fail
-└───storage
-    ├───albums
-    └───songs
+~/Public/lisn
+├── logs
+├── pub
+│   └── fail
+└── storage
+    ├── albums
+    └── songs
 ```
 
-After you setup your `RootFolder`, you'll assign its absolute path to the
-`RootFolder` constant in `lisn-server/config/config.go` file.
+#### Change Config
 
-On my machine it looks like this (because I use this project's root folder as my
-`RootFolder`):
+In the `config` folder you'll find two files: `config.go` and `secret.go`.
+The `config.go` file contains general setup settings, while the `secret.go` file
+should contain the login details for your database.
 
-```go
-RootFolder = "/home/sharpvik/go/src/github.com/sharpvik/lisn-server"
-```
+Both these files are merely templates, yet `config.go` is completely functional
+out of the box unless you decide to relocate or rename your `~/Public/lisn`
+folder. If that's the case, don't forget to change the `RootFolder` constant to
+reflect whatever change you've made. Same thing goes for every subfolder that
+has a mention in the `config.go` file.
 
-#### Configure Database Constants
-
-Create `lisn-server/config/secret.go`. This file is part of the `package config`
-and it is supposed to contain constants that will allow you to connect to the
-database. Here's how it looks like (you can literally `copy+paste` all of the
-following in your newly created `secret.go` and substitute with your values):
-
-```go
-package config
-
-const (
-    DBhost = "localhost"
-    DBport = 5432
-    DBuser = "user"
-    DBpassword = "***"
-    DBname = "Lisn"
-)
-```
+> You must change `secret.go` to match the correct login data if you want your
+> server to work.
 
 Now, your **Go** server is good to go, however you still need to build the
 client side if you want to use [Lisn Web App]. Follow the link -- you'll find
