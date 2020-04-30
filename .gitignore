@@ -1,5 +1,6 @@
 # files and storage
-config/secret.go
+config
+root
 sql/dump.sql
 
 # big folders
