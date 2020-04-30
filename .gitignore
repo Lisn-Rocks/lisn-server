@@ -1,6 +1,6 @@
 # files and storage
-./config
-./root
+config/
+root/
 ./sql/dump.sql
 
 # big folders

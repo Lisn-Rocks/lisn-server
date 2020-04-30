@@ -49,11 +49,11 @@ var (
 
 // The following values are used by the logger. Configure them as you please.
 
-// LogFolder contains path to the folder where logs are saved.
-var LogFolder = path.Join(RootFolder, "log")
+// LogsFolder contains path to the folder where logs are saved.
+var LogsFolder = path.Join(RootFolder, "logs")
 
 // LogFile is a path to the server log file.
-var LogFile = path.Join(LogFolder, "lisn-server.log")
+var LogFile = path.Join(LogsFolder, "lisn-server.log")
 
 // LogWriter must implement Writer and is uded by the logger to know where to
 // write the logs to. Uncomment the one you wish to use.
