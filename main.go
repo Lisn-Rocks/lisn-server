@@ -144,13 +144,3 @@ func (*mainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-
-func stripParams(url string) string {
-    questionmarkIndex := strings.IndexByte(url, '?')
-
-    if questionmarkIndex != -1 {
-        return url[:questionmarkIndex]
-    }
-
-    return url
-}
