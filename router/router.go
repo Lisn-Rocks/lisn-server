@@ -2,7 +2,10 @@ package router
 
 import (
 	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path"
 
 	"github.com/sharpvik/lisn-server/config"
 	"github.com/sharpvik/lisn-server/util"
@@ -49,11 +52,11 @@ func initUpload(root *mux.Router, env *Env) {
 			<html>
 				<head><title>Album Upload</title></head>
 				<body>
-					<form action="http://localhost:8000/upload" method="POST">
+					<form enctype="multipart/form-data" action="/upload"
+						method="POST">
 					<input type="password" name="password"
 						placeholder="Password"> <br>
-					<input type="file" name="folder" webkitdirectory directory
-						multiple> <br>
+					<input type="file" name="album"> <br>
 					<input type="submit" value="Upload">
 					</form>
 				</body>
@@ -62,29 +65,53 @@ func initUpload(root *mux.Router, env *Env) {
 		},
 	)
 
-	root.Subrouter().
-		Path("/upload").
-		Methods(http.MethodPost).
+	root.Subrouter().Path("/upload").Methods(http.MethodPost).
 		Handler(NewHandler(env,
 			func(w http.ResponseWriter, r *http.Request, e *Env) (re error) {
 				e.logr.Print("Incoming upload request")
 
 				// Parse form and check authenticity.
-				if err := r.ParseMultipartForm(0); err != nil {
+				if err := r.ParseMultipartForm(config.MaxMemUploadSize); err != nil {
 					e.logr.Println(err)
 				}
 
-				// I know that hardcoding a hash is a crude way to check
-				// identity but it has to stay until we have a user tracker that
-				// can properly handle user permissions.
-				hash := `SOU9h8MjuADDO+tx5pQqt+GjMmI0RTyN1CiZXGSXQt1XVF117WKrprphqT03Obb0iwlf2DBBFXIp7qUZqCooPA==`
-				salt := `N4M'R-d#23X@70[jZZ&r4#//+*E1W7,[a`
 				password := r.FormValue("password")
 
-				if util.Hash(password, salt) != hash {
+				// I know that hardcoding a hash is a crude way to check
+				// identity but it has to stay until we can properly handle user
+				// permissions.
+				if util.Hash(password, config.Salt) != config.Hash {
 					e.logr.Print("Authentication failed (hash did not match)")
 					fmt.Fprint(w, "<h1>You aren't authorized to upload.</h1>")
 					return
+				}
+
+				album, _, err := r.FormFile("album")
+				if err != nil {
+					e.logr.Println(err)
+					fmt.Fprint(w, "<h1>Failed to retreive archive.</h1>")
+					return
+				}
+				defer album.Close()
+
+				// Save archive under random filename
+				apath := path.Join(config.StorageFolder, util.RandName()+".zip")
+
+				/*
+					for _, err := os.Stat(apath); !os.IsNotExist(err); apath = path.Join(config.StorageFolder, util.RandName()+".zip") {
+					}
+				*/
+
+				archive, _ := os.Create(apath)
+				io.Copy(archive, album)
+				archive.Close()
+				defer os.Remove(apath)
+
+				meta, err := util.ReadMeta(apath)
+				if err != nil {
+					e.logr.Println(err)
+				} else {
+					e.logr.Println(meta.Album)
 				}
 
 				fmt.Fprint(w, "<h1>Your contribution is greatly appreciated!</h1>")
