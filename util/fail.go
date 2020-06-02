@@ -1,10 +1,10 @@
 package util
 
 import (
-	"net/http"
-	"log"
 	"fmt"
 	"io"
+	"log"
+	"net/http"
 	"os"
 	"path"
 
@@ -19,14 +19,14 @@ func FailWithCode(
 	status int,
 	logr *log.Logger,
 ) {
-	fullPath := path.Join( config.FailFolder, fmt.Sprintf("%d.html", status) )
+	fullPath := path.Join(config.FailFolder, fmt.Sprintf("%d.html", status))
 
 	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
-        w.WriteHeader(status)
-        io.WriteString( w, fmt.Sprintf("FAIL #%d", status) )
-        return
-    }
+		w.WriteHeader(status)
+		io.WriteString(w, fmt.Sprintf("FAIL #%d", status))
+		return
+	}
 
 	logr.Printf("Response: FAIL #%d", status)
-    http.ServeFile(w, r, fullPath)
+	http.ServeFile(w, r, fullPath)
 }

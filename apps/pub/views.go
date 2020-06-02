@@ -1,15 +1,14 @@
 package pub
 
 import (
-    "log"
-    "net/http"
-    "path"
-    "os"
+	"log"
+	"net/http"
+	"os"
+	"path"
 
-    "github.com/sharpvik/lisn-server/config"
-    "github.com/sharpvik/lisn-server/util"
+	"github.com/sharpvik/lisn-server/config"
+	"github.com/sharpvik/lisn-server/util"
 )
-
 
 // ServeFile function is a wrap-around that allows us to safely serve static
 // files from the PublicFolder (specified in package config).
@@ -20,14 +19,15 @@ import (
 //     http://localhost:8000/public/favicon.ico
 //
 func ServeFile(w http.ResponseWriter, r *http.Request, logr *log.Logger) {
-    url := r.URL.String()
-    fullPath := path.Join(config.RootFolder, url)
+	url := r.URL.String()
+	fullPath := path.Join(config.RootFolder, url)
+	logr.Print(fullPath)
 
-    if _, err := os.Stat(fullPath); os.IsNotExist(err) {
-        util.FailWithCode(w, r, http.StatusNotFound, logr)
-        return
-    }
+	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
+		util.FailWithCode(w, r, http.StatusNotFound, logr)
+		return
+	}
 
-    logr.Printf("Serving file <Root>%s", url)
-    http.ServeFile(w, r, fullPath)
+	logr.Printf("Serving file <Root>%s", url)
+	http.ServeFile(w, r, fullPath)
 }

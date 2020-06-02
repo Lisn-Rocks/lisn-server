@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"path"
 	"math/rand"
 	"net/http"
+	"path"
 
 	"github.com/sharpvik/lisn-server/config"
 	"github.com/sharpvik/lisn-server/util"
@@ -61,7 +61,7 @@ func ServeRandom(
 	row := db.QueryRow(`SELECT count(*) FROM songs;`)
 	row.Scan(&n)
 
-    songid := rand.Intn(n) + 1
+	songid := rand.Intn(n) + 1
 
 	http.Redirect(
 		w, r,
