@@ -7,6 +7,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/sharpvik/lisn-server/config"
+	"github.com/sharpvik/lisn-server/dbi"
 	"github.com/sharpvik/lisn-server/router"
 )
 
@@ -14,11 +15,12 @@ import (
 // initializes logger and starts serving, invoking `server.ListenAndServe()`.
 func main() {
 	logr := log.New(config.LogWriter, config.LogPrefix, log.Ltime)
-	//dbi := dbi.Init(logr)
+	dbi := dbi.Init(logr)
+	env := router.NewEnv(logr, dbi)
 
 	server := http.Server{
 		Addr:     config.Port,
-		Handler:  router.Init(logr),
+		Handler:  router.Init(env),
 		ErrorLog: logr,
 	}
 
