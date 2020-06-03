@@ -75,12 +75,7 @@ func initUpload(root *mux.Router, env *Env) {
 					e.logr.Println(err)
 				}
 
-				password := r.FormValue("password")
-
-				// I know that hardcoding a hash is a crude way to check
-				// identity but it has to stay until we can properly handle user
-				// permissions.
-				if util.Hash(password, config.Salt) != config.Hash {
+				if !util.AuthUpload(r) {
 					e.logr.Print("Authentication failed (hash did not match)")
 					fmt.Fprint(w, "<h1>You aren't authorized to upload.</h1>")
 					return
@@ -94,25 +89,21 @@ func initUpload(root *mux.Router, env *Env) {
 				}
 				defer album.Close()
 
-				// Save archive under random filename
+				// Save archive under random filename for further reading.
 				apath := path.Join(config.StorageFolder, util.RandName()+".zip")
-
-				/*
-					for _, err := os.Stat(apath); !os.IsNotExist(err); apath = path.Join(config.StorageFolder, util.RandName()+".zip") {
-					}
-				*/
 
 				archive, _ := os.Create(apath)
 				io.Copy(archive, album)
 				archive.Close()
 				defer os.Remove(apath)
 
-				meta, err := util.ReadMeta(apath)
+				meta, err := util.ReadUploadMeta(apath)
 				if err != nil {
 					e.logr.Println(err)
-				} else {
-					e.logr.Println(meta.Album)
+					fmt.Fprint(w, "<h1>Failed to read metadata.</h1>")
+					return
 				}
+				e.logr.Printf("Processing %s by %s", meta.Album, meta.Artist)
 
 				fmt.Fprint(w, "<h1>Your contribution is greatly appreciated!</h1>")
 				return

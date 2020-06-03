@@ -2,18 +2,27 @@ package util
 
 import (
 	"archive/zip"
-	"crypto/sha512"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"math/rand"
+	"net/http"
+
+	"github.com/sharpvik/lisn-server/config"
 )
 
-// Hash returns base64 encoded SHA512 salted hash of password as a string.
-func Hash(password, salt string) string {
-	h := sha512.Sum512([]byte(password + salt))
-	return base64.StdEncoding.EncodeToString(h[:])
+// AuthUpload uses Hash function to validate upload password.
+func AuthUpload(r *http.Request) bool {
+	password := r.FormValue("password")
+
+	// I know that hardcoding a hash is a crude way to check
+	// identity but it has to stay until we can properly handle user
+	// permissions.
+	if Hash(password, config.Salt) != config.Hash {
+		return false
+	}
+
+	return true
 }
 
 const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -36,20 +45,21 @@ func findFile(files []*zip.File, name string) *zip.File {
 	return nil
 }
 
-// Meta contains album metadata.
-type Meta struct {
+// UploadMeta contains album metadata.
+type UploadMeta struct {
 	Album    string   `json:"album"`
 	Artist   string   `json:"artist"`
 	Coverext string   `json:"coverext"`
 	Genres   []string `json:"genres"`
 	Songs    []struct {
-		Song    string `json:"song"`
-		Songext string `json:"songext"`
+		Feat    []string `json:"feat"`
+		Song    string   `json:"song"`
+		Songext string   `json:"songext"`
 	} `json:"songs"`
 }
 
-// ReadMeta returns album metadata read from "meta.json" file.
-func ReadMeta(apath string) (data *Meta, err error) {
+// ReadUploadMeta returns album metadata read from "meta.json" file.
+func ReadUploadMeta(apath string) (data *UploadMeta, err error) {
 	r, err := zip.OpenReader(apath)
 	defer r.Close()
 	if err != nil {
@@ -64,7 +74,7 @@ func ReadMeta(apath string) (data *Meta, err error) {
 	m, _ := metaptr.Open()
 	meta, _ := ioutil.ReadAll(m)
 
-	data = new(Meta)
+	data = new(UploadMeta)
 	err = json.Unmarshal(meta, data)
 	return
 }
