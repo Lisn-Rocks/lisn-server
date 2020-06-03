@@ -27,14 +27,14 @@ func Init(logr *log.Logger) *DBI {
 	db, err := sql.Open("postgres", psqlInfo)
 
 	if err != nil {
-		logr.Print("Database arguments are invalid")
+		logr.Print("database arguments are invalid")
 		logr.Fatalln(err)
 	}
 
 	err = db.Ping()
 
 	if err != nil {
-		logr.Print("Can't connect to the database")
+		logr.Print("can't connect to the database")
 		logr.Fatalln(err)
 	}
 

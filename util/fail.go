@@ -2,7 +2,6 @@ package util
 
 import (
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -23,10 +22,10 @@ func FailWithCode(
 
 	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
 		w.WriteHeader(status)
-		io.WriteString(w, fmt.Sprintf("FAIL #%d", status))
+		fmt.Fprintf(w, "ERROR %d", status)
 		return
 	}
 
-	logr.Printf("Response: FAIL #%d", status)
+	logr.Printf("status code: %d", status)
 	http.ServeFile(w, r, fullPath)
 }

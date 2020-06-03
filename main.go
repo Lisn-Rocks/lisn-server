@@ -11,8 +11,13 @@ import (
 	"github.com/sharpvik/lisn-server/router"
 )
 
-// main function is very simple. It merely opens and connects to the database,
-// initializes logger and starts serving, invoking `server.ListenAndServe()`.
+// main function is very simple. Here is what is does:
+//
+//     1. Initialize logger (logr).
+//     2. Initialize database interface (dbi).
+//     3. Create router environment (env).
+//     4. Create instance of http.Server.
+//     5. Start serving.
 func main() {
 	logr := log.New(config.LogWriter, config.LogPrefix, log.Ltime)
 	dbi := dbi.Init(logr)
@@ -24,8 +29,8 @@ func main() {
 		ErrorLog: logr,
 	}
 
-	logr.Printf("Serving at port %s", config.Port)
-	server.ListenAndServe()
+	logr.Printf("serving at port %s", config.Port)
+	logr.Fatalln(server.ListenAndServe())
 }
 
 /*

@@ -2,13 +2,9 @@ package router
 
 import (
 	"fmt"
-	"io"
 	"net/http"
-	"os"
-	"path"
 
 	"github.com/sharpvik/lisn-server/config"
-	"github.com/sharpvik/lisn-server/util"
 	"github.com/sharpvik/mux"
 )
 
@@ -66,49 +62,7 @@ func initUpload(root *mux.Router, env *Env) {
 	)
 
 	root.Subrouter().Path("/upload").Methods(http.MethodPost).
-		Handler(NewHandler(env,
-			func(w http.ResponseWriter, r *http.Request, e *Env) (re error) {
-				e.logr.Print("Incoming upload request")
-
-				// Parse form and check authenticity.
-				if err := r.ParseMultipartForm(config.MaxMemUploadSize); err != nil {
-					e.logr.Println(err)
-				}
-
-				if !util.AuthUpload(r) {
-					e.logr.Print("Authentication failed (hash did not match)")
-					fmt.Fprint(w, "<h1>You aren't authorized to upload.</h1>")
-					return
-				}
-
-				album, _, err := r.FormFile("album")
-				if err != nil {
-					e.logr.Println(err)
-					fmt.Fprint(w, "<h1>Failed to retreive archive.</h1>")
-					return
-				}
-				defer album.Close()
-
-				// Save archive under random filename for further reading.
-				apath := path.Join(config.StorageFolder, util.RandName()+".zip")
-
-				archive, _ := os.Create(apath)
-				io.Copy(archive, album)
-				archive.Close()
-				defer os.Remove(apath)
-
-				meta, err := util.ReadUploadMeta(apath)
-				if err != nil {
-					e.logr.Println(err)
-					fmt.Fprint(w, "<h1>Failed to read metadata.</h1>")
-					return
-				}
-				e.logr.Printf("Processing %s by %s", meta.Album, meta.Artist)
-
-				fmt.Fprint(w, "<h1>Your contribution is greatly appreciated!</h1>")
-				return
-			},
-		))
+		Handler(NewHandler(env, processUpload)) // views.go/processUpload
 }
 
 func initAPI(api *mux.Router) {

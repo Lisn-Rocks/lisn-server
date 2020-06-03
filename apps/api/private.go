@@ -4,29 +4,12 @@ package api
 
 import (
 	"database/sql"
-	"errors"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
-	"strings"
 
 	"github.com/sharpvik/lisn-server/util"
 )
-
-func parseIDFromURL(r *http.Request) (id int, err error) {
-	split := strings.Split(r.URL.String(), "/")[1:]
-
-	if len(split) != 3 {
-		err = errors.New("Incorrect number of elements in a split")
-		return
-	}
-
-	// Atoi used to prevent injections. Only numbers pass!
-	id, err = strconv.Atoi(split[2])
-
-	return
-}
 
 func songExists(songid int, db *sql.DB) bool {
 	var name string
@@ -82,6 +65,6 @@ func serveFile(
 		return
 	}
 
-	logr.Printf("Serving file %s", filepath)
+	logr.Printf("serving file %s", filepath)
 	http.ServeFile(w, r, filepath)
 }

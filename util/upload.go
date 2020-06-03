@@ -28,8 +28,8 @@ func AuthUpload(r *http.Request) bool {
 const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 // RandName returns random string of letters that we use as filename generator.
-func RandName() string {
-	b := make([]byte, 32)
+func RandName(length uint) string {
+	b := make([]byte, length)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
