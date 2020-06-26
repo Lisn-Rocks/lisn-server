@@ -67,9 +67,9 @@ create table feats
 
 create table genres
 (
-	genre text not null,
 	albumid int not null
 		constraint album
 			references albums
-				on delete cascade
+				on delete cascade,
+	genre text not null
 );

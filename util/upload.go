@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"strings"
 
 	"github.com/sharpvik/lisn-server/config"
 )
@@ -38,28 +39,28 @@ func RandName(length uint) string {
 
 func findFile(files []*zip.File, name string) *zip.File {
 	for _, f := range files {
-		if f.Name == name {
+		if strings.HasSuffix(f.Name, name) {
 			return f
 		}
 	}
 	return nil
 }
 
-// UploadMeta contains album metadata.
-type UploadMeta struct {
+// AlbumMeta contains album metadata.
+type AlbumMeta struct {
 	Album    string   `json:"album"`
 	Artist   string   `json:"artist"`
-	Coverext string   `json:"coverext"`
+	CoverExt string   `json:"coverext"`
 	Genres   []string `json:"genres"`
 	Songs    []struct {
-		Feat    []string `json:"feat"`
-		Song    string   `json:"song"`
-		Songext string   `json:"songext"`
+		Feat     []string `json:"feat"`
+		Song     string   `json:"song"`
+		AudioExt string   `json:"audioext"`
 	} `json:"songs"`
 }
 
-// ReadUploadMeta returns album metadata read from "meta.json" file.
-func ReadUploadMeta(apath string) (data *UploadMeta, err error) {
+// ReadAlbumMeta returns album metadata read from "meta.json" file.
+func ReadAlbumMeta(apath string) (data *AlbumMeta, err error) {
 	r, err := zip.OpenReader(apath)
 	defer r.Close()
 	if err != nil {
@@ -74,7 +75,7 @@ func ReadUploadMeta(apath string) (data *UploadMeta, err error) {
 	m, _ := metaptr.Open()
 	meta, _ := ioutil.ReadAll(m)
 
-	data = new(UploadMeta)
+	data = new(AlbumMeta)
 	err = json.Unmarshal(meta, data)
 	return
 }
