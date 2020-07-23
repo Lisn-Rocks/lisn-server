@@ -1,20 +1,20 @@
 package dbi
 
 import (
-	"os"
-
 	"github.com/sharpvik/lisn-server/util"
 )
 
 // UploadAlbum function deals with album uploads in terms of database operations
 // and storage manipulations.
-func (dbi *DBI) UploadAlbum(archive *os.File, meta *util.AlbumMeta) (re error) {
+func (dbi *DBI) UploadAlbum(
+	meta *util.AlbumMeta) (firstSongID int, albumid int, re error) {
+
 	artistid, re := dbi.SearchAddArtist(meta.Artist)
 	if re != nil {
 		return
 	}
 
-	albumid, re := dbi.SearchAddAlbum(meta.Album, artistid, meta.CoverExt)
+	albumid, re = dbi.SearchAddAlbum(meta.Album, artistid, meta.CoverExt)
 	if re != nil {
 		return
 	}
@@ -26,11 +26,17 @@ func (dbi *DBI) UploadAlbum(archive *os.File, meta *util.AlbumMeta) (re error) {
 		}
 	}
 
+	gotFirstSongID := false
 	for _, song := range meta.Songs {
 		songid, err := dbi.AddSong(song.Song, albumid, song.AudioExt)
 		if err != nil {
 			dbi.logr.Printf("failed to add song: %s", song.Song)
 			continue
+		}
+
+		if !gotFirstSongID {
+			firstSongID = songid
+			gotFirstSongID = true
 		}
 
 		for _, feat := range song.Feat {
