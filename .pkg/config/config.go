@@ -42,6 +42,10 @@ var (
 	// error code utilized by the app.
 	FailFolder = path.Join(PublicFolder, "fail")
 
+	// UploadFolder contains static HTML files that are sent to user on request
+	// to upload a new album.
+	UploadFolder = path.Join(PublicFolder, "upload")
+
 	// LisnFolder contains static files that, in their entirity, make up the
 	// whole of the Lisn Music Streaming App.
 	LisnFolder = path.Join(PublicFolder, "lisn")
@@ -50,7 +54,6 @@ var (
 	// Service activities (including, for example, CD build logs).
 	LogsFolder = path.Join(RootFolder, "logs")
 )
-
 
 // The following values are used by the logger. Configure them as you please.
 
