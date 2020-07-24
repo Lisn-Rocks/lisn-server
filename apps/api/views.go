@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"path"
 	"math/rand"
 	"net/http"
+	"path"
 
 	"github.com/sharpvik/lisn-server/config"
 	"github.com/sharpvik/lisn-server/util"
@@ -23,16 +23,10 @@ func ServeByID(
 	w http.ResponseWriter, r *http.Request,
 	db *sql.DB, logr *log.Logger,
 ) {
-	songid, err := parseIDFromURL(r)
-
-	if err != nil {
-		logr.Print("Cannot convert song id specified in URL to int")
-		util.FailWithCode(w, r, http.StatusForbidden, logr)
-		return
-	}
+	songid := 42
 
 	if !songExists(songid, db) {
-		logr.Print("Song with given ID does not exist in the database")
+		logr.Print("song with given ID does not exist in the database")
 		util.FailWithCode(w, r, http.StatusNotFound, logr)
 		return
 	}
@@ -61,7 +55,7 @@ func ServeRandom(
 	row := db.QueryRow(`SELECT count(*) FROM songs;`)
 	row.Scan(&n)
 
-    songid := rand.Intn(n) + 1
+	songid := rand.Intn(n) + 1
 
 	http.Redirect(
 		w, r,
@@ -80,16 +74,10 @@ func ServeCover(
 	w http.ResponseWriter, r *http.Request,
 	db *sql.DB, logr *log.Logger,
 ) {
-	id, err := parseIDFromURL(r)
-
-	if err != nil {
-		logr.Print("Cannot convert ID specified in URL to int")
-		util.FailWithCode(w, r, http.StatusForbidden, logr)
-		return
-	}
+	id := 42
 
 	if !songExists(id, db) {
-		logr.Print("Song with given ID does not exist in the database")
+		logr.Print("song with given ID does not exist in the database")
 		util.FailWithCode(w, r, http.StatusNotFound, logr)
 		return
 	}
@@ -114,13 +102,7 @@ func ServeCoverMin(
 	w http.ResponseWriter, r *http.Request,
 	db *sql.DB, logr *log.Logger,
 ) {
-	id, err := parseIDFromURL(r)
-
-	if err != nil {
-		logr.Print("Cannot convert ID specified in URL to int")
-		util.FailWithCode(w, r, http.StatusForbidden, logr)
-		return
-	}
+	id := 42
 
 	if !songExists(id, db) {
 		logr.Print("Song with given ID does not exist in the database")
@@ -151,13 +133,7 @@ func ServeJSON(
 	db *sql.DB,
 	logr *log.Logger,
 ) {
-	songid, err := parseIDFromURL(r)
-
-	if err != nil {
-		logr.Print("Cannot convert ID specified in URL to int")
-		util.FailWithCode(w, r, http.StatusForbidden, logr)
-		return
-	}
+	songid := 42
 
 	if !songExists(songid, db) {
 		logr.Print("Song with given ID does not exist in the database")
