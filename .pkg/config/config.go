@@ -16,7 +16,7 @@ const (
 	// paths of different files on the system.
 	//
 	// MAKE SURE TO CHANGE IT BEFORE RUNNING THE SERVER ON YOUR MACHINE!
-	RootFolder = "/home/user/Public/lisn"
+	RootFolder = "/home/sharpvik/Public/lisn"
 )
 
 // The following variables contain string paths of different folders.
@@ -31,6 +31,9 @@ var (
 
 	// AlbumsFolder contains all album / playlist covers for the songs.
 	AlbumsFolder = path.Join(StorageFolder, "albums")
+
+	// ArchivesFolder contains temporary album archives.
+	ArchivesFolder = path.Join(StorageFolder, "archives")
 
 	// PublicFolder contains static files that are to be served publically.
 	// These files do not contain any sensitive data and thus we don't really
@@ -66,3 +69,7 @@ var LogWriter, _ = os.Create(LogFile)
 
 // LogPrefix is a string used by the logger to prefix every log message.
 const LogPrefix = ""
+
+// MaxMemUploadSize is the number of bytes that will be saved to memory from
+// multipart upload form.
+const MaxMemUploadSize int64 = 500000000
