@@ -49,13 +49,18 @@ Run the `setup.sh` script. It will create a root folder for all server files at
 `~/Public/lisn` while also unpacking all the config file templates from `.pkg`.
 This is the initial layout of the `~/Public/lisn` folder.
 
+> Install **ImageMagick** and make sure that it has the proper decode deligates
+> for the `.jpg` and `.png` formats (at least). The `convert` command is
+> essential for the server's proper functioning.
+
 #### RootFolder Tree
 
 ```bash
 ~/Public/lisn
 ├── logs
 ├── pub
-│   └── fail
+│   ├── fail
+│   └── upload
 └── storage
     ├── albums
     └── songs
@@ -85,10 +90,92 @@ all deployment instructions there.
 
 ### Database
 
-Lisn is a fairly young project. There isn't a way to quickly upload albums onto
-the server and register them in the database. I had to do it myself via the
-`psql` prompt while simultaneously saving files to `pub`. You can develop your
-own mechanisms if you wish, and if you do, please share!
+Lisn is a fairly young project, however, there is a mechanism in place that
+allows maintainers to quickly initialize database and upload albums into the
+service!
+
+#### Initial Setup and Migrations
+
+First of all, you need to install **PostgreSQL** database server which will
+allow you to utilize the `psql` terminal command. As soon as that's all good and
+working, head to the `sql` folder where all database migrations are stored.
+
+```bash
+# Create empty database called 'lisn' and exit the psql console.
+psql
+create database lisn;
+\q
+
+# Apply migrations.
+./apply_all.sh lisn
+```
+
+#### Album Uploads
+
+At this point, all you need to do is upload some albums. It is very simple. All
+songs must be uploaded as albums to ensure clarity and consistency. One album is
+a folder that contains:
+
+1. Album cover image in any appropriate format (preferably `.jpg` or `.png`)
+with *1:1* side ratio (square) called `cover.jpg` or `cover.png`;
+2. Audio files corresponding to every song in the album (preferably `.mp3`) that
+must be named the same way they are called. For example, audio file for song
+"Mustapha" by Queen must be named `Mustapha.mp3`.
+3. The metadata file called `meta.json` that contains crucial information
+required to process an upload.
+
+What follows is an example of the `meta.json` file. As you can see from the
+comments, some fields are optional and they have default values. This measure
+saves maintainers' time and storage space.
+
+> No comments are allowed in the actual `meta.json` file as they will confuse
+> the parser! I use them here for explanation purposes only.
+
+```json
+{
+    "artist": "MadeUp",
+    "album": "Fuss In The Air",
+    "genres": [
+        "Hard Rock",
+        "Heavy Metal"
+    ],
+    "coverext": ".png", // ommittable; defaults to ".jpg"
+    // songs must be ordered the same way they are in an actual album!
+    "songs": [
+        {
+            "song": "First One",
+            "audioext": ".wav", // ommittable; defaults to ".mp3"
+            "feat": ["Someone Else"] // ommittable; defaults to []
+        },
+        {
+            "song": "Make Them On The Go!"
+        },
+        {
+            "song": "You Know How It Is"
+        },
+        {
+            "song": "Just Like That"
+        }
+    ]
+}
+```
+
+This JSON album data is supposed to represent a folder (album) with the
+following structure:
+
+```bash
+Fuss In The Air
+├── cover.png
+├── meta.json
+├── "First One.wav"
+├── "Make Them On The Go.mp3"
+├── "You Know How It Is.mp3"
+└── "Just Like That.mp3"
+```
+
+Now that you have your album folder ready to go, zip it without the folder
+itself (only the files go into the archive) and use `/pub/upload` site on your
+server to make Lisn process and save your music!
 
 
 ### Run, Build or Install

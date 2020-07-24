@@ -15,6 +15,6 @@ if [ ! -d ~/Public ]; then
 fi
 mv root ~/Public/lisn
 
-# Unpack config files .You'll have to edit these!
+# Unpack config files. You'll have to edit these!
 cp -r .pkg/config config
 

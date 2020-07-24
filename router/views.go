@@ -60,7 +60,7 @@ func processUpload(w http.ResponseWriter, r *http.Request, e *Env) (re error) {
 
 	// Unzip archive into folder named randName.
 	util.Unzip(rdr, folderName)
-	defer os.RemoveAll(randName)
+	defer os.RemoveAll(folderName)
 
 	meta, err := util.ReadAlbumMeta(folderName)
 	if err != nil {
@@ -68,6 +68,8 @@ func processUpload(w http.ResponseWriter, r *http.Request, e *Env) (re error) {
 		fmt.Fprint(w, "<h1>Failed to read metadata.</h1>")
 		return
 	}
+
+	meta.Fix()
 
 	firstSongID, albumid, err := e.dbi.UploadAlbum(meta)
 	if err != nil {

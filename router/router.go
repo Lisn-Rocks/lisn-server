@@ -13,10 +13,10 @@ func Init(env *Env) *mux.Router {
 	root := mux.New()
 
 	root.Subrouter().PathPrefix("/pub/").Methods(http.MethodGet).Handler(
-		http.FileServer(http.Dir(config.PublicFolder)),
-	)
+		http.FileServer(http.Dir(config.PublicFolder)))
 
-	initUpload(root, env)
+	root.Subrouter().Path("/upload").Methods(http.MethodPost).
+		Handler(NewHandler(env, processUpload)) // views.go > processUpload
 
 	api := root.Subrouter().PathPrefix("/api")
 	initAPI(api)
@@ -41,39 +41,15 @@ func Init(env *Env) *mux.Router {
 	return root
 }
 
-func initUpload(root *mux.Router, env *Env) {
-	root.Subrouter().Path("/upload").Methods(http.MethodGet).HandleFunc(
-		func(w http.ResponseWriter, r *http.Request) {
-			site := `
-			<html>
-				<head><title>Album Upload</title></head>
-				<body>
-					<form enctype="multipart/form-data" action="/upload"
-						method="POST">
-					<input type="password" name="password"
-						placeholder="Password"> <br>
-					<input type="file" name="album"> <br>
-					<input type="submit" value="Upload">
-					</form>
-				</body>
-			</html>`
-			fmt.Fprint(w, site)
-		},
-	)
-
-	root.Subrouter().Path("/upload").Methods(http.MethodPost).
-		Handler(NewHandler(env, processUpload)) // views.go/processUpload
-}
-
 func initAPI(api *mux.Router) {
 	api.Subrouter().PathPrefix("/album").HandleFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, "album site")
 		},
 	)
-	api.Subrouter().PathPrefix("/random").HandleFunc(
+	api.Subrouter().PathPrefix("/discover").HandleFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprint(w, "random site")
+			fmt.Fprint(w, "discover site")
 		},
 	)
 	api.Subrouter().PathPrefix("/song").HandleFunc(

@@ -10,6 +10,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
@@ -72,6 +73,20 @@ func ReadAlbumMeta(apath string) (data *AlbumMeta, err error) {
 	data = new(AlbumMeta)
 	err = json.Unmarshal(meta, data)
 	return
+}
+
+// Fix is a clever function that allows admins to save time by ommitting common
+// defaults like '.mp3' audioext in the 'meta.json' files.
+func (meta *AlbumMeta) Fix() {
+	if meta.CoverExt == "" {
+		meta.CoverExt = ".jpg"
+	}
+
+	for i, song := range meta.Songs {
+		if song.AudioExt == "" {
+			meta.Songs[i].AudioExt = ".mp3"
+		}
+	}
 }
 
 // Unzip will decompress a zip archive, moving all files and folders
@@ -141,9 +156,8 @@ func SaveSongs(
 ) (err error) {
 	for id, song := range meta.Songs {
 		songFileName := path.Join(folderPath, song.Song+song.AudioExt)
-		songidString := fmt.Sprintf("%d", firstSongID+id)
-		songTargetName := path.Join(config.SongsFolder,
-			songidString+song.AudioExt)
+		songidString := fmt.Sprintf("%d%s", firstSongID+id, song.AudioExt)
+		songTargetName := path.Join(config.SongsFolder, songidString)
 
 		err = os.Rename(songFileName, songTargetName)
 	}
@@ -155,9 +169,19 @@ func SaveSongs(
 // location within the config.AlbumsFolder.
 func SaveAlbumCover(albumid int, meta *AlbumMeta, folderPath string) error {
 	coverFileName := path.Join(folderPath, "cover"+meta.CoverExt)
-	albumidString := fmt.Sprintf("%d", albumid)
-	coverTargetName := path.Join(config.AlbumsFolder,
-		albumidString+meta.CoverExt)
+	albumidString := fmt.Sprintf("%d%s", albumid, meta.CoverExt)
+	coverTargetName := path.Join(config.AlbumsFolder, albumidString)
 
-	return os.Rename(coverFileName, coverTargetName)
+	err := os.Rename(coverFileName, coverTargetName)
+	if err != nil {
+		return err
+	}
+
+	// Minimize album cover.
+	minFileName := fmt.Sprintf("%d-min%s", albumid, meta.CoverExt)
+	minFullPath := path.Join(config.AlbumsFolder, minFileName)
+	cmd := exec.Command("convert", coverTargetName, "-resize", "100x100",
+		minFullPath)
+	_, err = cmd.Output()
+	return err
 }
