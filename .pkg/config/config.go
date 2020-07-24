@@ -63,8 +63,8 @@ var (
 // LogFile contains path to the log file
 var LogFile = path.Join(LogsFolder, "lisn-server.log")
 
-// LogWriter must implement Writer and is uded by the logger to know where to
-// write the logs to. Uncomment the one you wish to use.
+// LogWriter must implement Writer and is used by the logger to know where to
+// write the logs to.
 var LogWriter, _ = os.Create(LogFile)
 
 // LogPrefix is a string used by the logger to prefix every log message.
