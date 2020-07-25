@@ -3,7 +3,7 @@
 Lisn Server allows you to manipulate database and serve files related to the
 **[Lisn Music Streaming Service]**.
 
-[Lisn Music Streaming Service]: https://github./com/sharpvik/Lisn
+[Lisn Music Streaming Service]: https://github.com/Lisn-Rocks/meta
 
 
 
@@ -85,7 +85,7 @@ Now, your **Go** server is good to go, however you still need to build the
 client side if you want to use [Lisn Web App]. Follow the link -- you'll find
 all deployment instructions there.
 
-[Lisn Web App]: https://github.com/sharpvik/lisn-web-app
+[Lisn Web App]: https://github.com/Lisn-Rocks/web-app
 
 
 ### Database
@@ -204,7 +204,7 @@ phrase is a cliché but trust me, any contribution you make
 **Scout through the [Issues]**, look for the ones you think you can fix and
 *go ahead*.
 
-[Issues]: https://github.com/sharpvik/lisn-server/issues
+[Issues]: https://github.com/Lisn-Rocks/server/issues
 
 Found a bug? -- **create a new issue** for the rest of us to see.
 
@@ -222,7 +222,7 @@ these:
 - [Lisn Design] - all graphics realted stuff
 
 [Vue.js]: https://vuejs.org
-[Lisn Design]: https://github.com/sharpvik/lisn-design
+[Lisn Design]: https://github.com/Lisn-Rocks/design
 
 
 
