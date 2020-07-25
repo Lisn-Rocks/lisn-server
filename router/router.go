@@ -23,7 +23,7 @@ func Init(env *Env) *mux.Router {
 
 	root.Subrouter().Path("/favicon.ico").HandleFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			url := "/pub/lisn/favicon.ico"
+			url := "/pub/favicon.ico"
 			http.Redirect(w, r, url, http.StatusSeeOther)
 		},
 	)
