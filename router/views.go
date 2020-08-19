@@ -8,8 +8,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/sharpvik/lisn-server/config"
-	"github.com/sharpvik/lisn-server/util"
+	"github.com/Lisn-Rocks/server/config"
+	"github.com/Lisn-Rocks/server/util"
 )
 
 func processUpload(w http.ResponseWriter, r *http.Request, e *Env) (re error) {

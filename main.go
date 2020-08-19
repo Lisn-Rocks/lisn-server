@@ -6,9 +6,9 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/sharpvik/lisn-server/config"
-	"github.com/sharpvik/lisn-server/dbi"
-	"github.com/sharpvik/lisn-server/router"
+	"github.com/Lisn-Rocks/server/config"
+	"github.com/Lisn-Rocks/server/dbi"
+	"github.com/Lisn-Rocks/server/router"
 )
 
 func main() {

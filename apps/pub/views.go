@@ -6,8 +6,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/sharpvik/lisn-server/config"
-	"github.com/sharpvik/lisn-server/util"
+	"github.com/Lisn-Rocks/server/config"
+	"github.com/Lisn-Rocks/server/util"
 )
 
 // ServeFile function is a wrap-around that allows us to safely serve static

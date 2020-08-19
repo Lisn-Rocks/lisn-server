@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/sharpvik/lisn-server/dbi"
-	"github.com/sharpvik/lisn-server/util"
+	"github.com/Lisn-Rocks/server/dbi"
+	"github.com/Lisn-Rocks/server/util"
 )
 
 // Env is a struct that carries environment data for request handlers.

@@ -15,7 +15,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sharpvik/lisn-server/config"
+	"github.com/Lisn-Rocks/server/config"
 )
 
 // AuthUpload uses Hash function to validate upload password.

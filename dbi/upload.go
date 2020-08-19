@@ -1,7 +1,7 @@
 package dbi
 
 import (
-	"github.com/sharpvik/lisn-server/util"
+	"github.com/Lisn-Rocks/server/util"
 )
 
 // UploadAlbum function deals with album uploads in terms of database operations

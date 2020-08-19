@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/sharpvik/lisn-server/util"
+	"github.com/Lisn-Rocks/server/util"
 )
 
 func songExists(songid int, db *sql.DB) bool {

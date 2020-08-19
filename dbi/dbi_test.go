@@ -6,7 +6,7 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/sharpvik/lisn-server/config"
+	"github.com/Lisn-Rocks/server/config"
 )
 
 func TestArtistID(t *testing.T) {

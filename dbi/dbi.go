@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/sharpvik/lisn-server/config"
+	"github.com/Lisn-Rocks/server/config"
 )
 
 // DBI stands for DataBase Interface. It is a struct that wraps around *sql.DB

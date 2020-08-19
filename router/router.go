@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/sharpvik/lisn-server/config"
+	"github.com/Lisn-Rocks/server/config"
 	"github.com/sharpvik/mux"
 )
 
