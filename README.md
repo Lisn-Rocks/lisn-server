@@ -3,9 +3,7 @@
 Lisn Server allows you to manipulate database and serve files related to the
 **[Lisn Music Streaming Service]**.
 
-[Lisn Music Streaming Service]: https://github.com/Lisn-Rocks/meta
-
-
+[lisn music streaming service]: https://github.com/Lisn-Rocks/meta
 
 ## Getting Started
 
@@ -31,11 +29,10 @@ the [installation process][install].
 [bin]: https://golang.org/dl/
 [install]: https://golang.org/doc/install
 
-
 ### Dependencies & Config Files
 
 As soon as you have **Go** installed and running on your machine, you need to do
-the following:
+the following: > get rid of these dependencies and make it automatic: <19-08-20, aleksimart> >
 
 ```bash
 go get github.com/lib/pq    # required to interface with PostrgreSQL
@@ -85,8 +82,7 @@ Now, your **Go** server is good to go, however you still need to build the
 client side if you want to use [Lisn Web App]. Follow the link -- you'll find
 all deployment instructions there.
 
-[Lisn Web App]: https://github.com/Lisn-Rocks/web-app
-
+[lisn web app]: https://github.com/Lisn-Rocks/web-app
 
 ### Database
 
@@ -117,12 +113,12 @@ songs must be uploaded as albums to ensure clarity and consistency. One album is
 a folder that contains:
 
 1. Album cover image in any appropriate format (preferably `.jpg` or `.png`)
-with *1:1* side ratio (square) called `cover.jpg` or `cover.png`;
+   with _1:1_ side ratio (square) called `cover.jpg` or `cover.png`;
 2. Audio files corresponding to every song in the album (preferably `.mp3`) that
-must be named the same way they are called. For example, audio file for song
-"Mustapha" by Queen must be named `Mustapha.mp3`.
+   must be named the same way they are called. For example, audio file for song
+   "Mustapha" by Queen must be named `Mustapha.mp3`.
 3. The metadata file called `meta.json` that contains crucial information
-required to process an upload.
+   required to process an upload.
 
 What follows is an example of the `meta.json` file. As you can see from the
 comments, some fields are optional and they have default values. This measure
@@ -133,30 +129,27 @@ saves maintainers' time and storage space.
 
 ```json
 {
-    "artist": "MadeUp",
-    "album": "Fuss In The Air",
-    "genres": [
-        "Hard Rock",
-        "Heavy Metal"
-    ],
-    "coverext": ".png", // ommittable; defaults to ".jpg"
-    // songs must be ordered the same way they are in an actual album!
-    "songs": [
-        {
-            "song": "First One",
-            "audioext": ".wav", // ommittable; defaults to ".mp3"
-            "feat": ["Someone Else"] // ommittable; defaults to []
-        },
-        {
-            "song": "Make Them On The Go!"
-        },
-        {
-            "song": "You Know How It Is"
-        },
-        {
-            "song": "Just Like That"
-        }
-    ]
+  "artist": "MadeUp",
+  "album": "Fuss In The Air",
+  "genres": ["Hard Rock", "Heavy Metal"],
+  "coverext": ".png", // ommittable; defaults to ".jpg"
+  // songs must be ordered the same way they are in an actual album!
+  "songs": [
+    {
+      "song": "First One",
+      "audioext": ".wav", // ommittable; defaults to ".mp3"
+      "feat": ["Someone Else"] // ommittable; defaults to []
+    },
+    {
+      "song": "Make Them On The Go!"
+    },
+    {
+      "song": "You Know How It Is"
+    },
+    {
+      "song": "Just Like That"
+    }
+  ]
 }
 ```
 
@@ -177,7 +170,6 @@ Now that you have your album folder ready to go, zip it without the folder
 itself (only the files go into the archive) and use `/pub/upload` site on your
 server to make Lisn process and save your music!
 
-
 ### Run, Build or Install
 
 ```bash
@@ -190,28 +182,24 @@ go build    # puts binary file called `lisn-server` into the project folder
 go install  # creates binary file at $(go env GOPATH)/bin/lisn-server
 ```
 
-
-
 ## Contribute
 
 All contributions to the Lisn project are greately appreciated. I know, the
 phrase is a cliché but trust me, any contribution you make
 **creates a ton of difference**.
 
-
 ### Ways To Help
 
 **Scout through the [Issues]**, look for the ones you think you can fix and
-*go ahead*.
+_go ahead_.
 
-[Issues]: https://github.com/Lisn-Rocks/server/issues
+[issues]: https://github.com/Lisn-Rocks/server/issues
 
 Found a bug? -- **create a new issue** for the rest of us to see.
 
 And of course, you are always welcome to `fork + git clone`, and then do
 whatever you want. If you think that your version works better than the one we
 have published here -- **issue a pull request**!
-
 
 ### Sister Repos
 
@@ -221,18 +209,14 @@ these:
 - [Lisn Web App] - web app written in [Vue.js]
 - [Lisn Design] - all graphics realted stuff
 
-[Vue.js]: https://vuejs.org
-[Lisn Design]: https://github.com/Lisn-Rocks/design
-
-
+[vue.js]: https://vuejs.org
+[lisn design]: https://github.com/Lisn-Rocks/design
 
 ## Authors
 
-- **[Viktor Rozenko]** - *Initial work*
+- **[Viktor Rozenko]** - _Initial work_
 
-[Viktor Rozenko]: https://github.com/sharpvik
-
-
+[viktor rozenko]: https://github.com/sharpvik
 
 ## License
 
@@ -245,11 +229,9 @@ and/or use it. None of the authors and contributors are responsible (liable)
 for **any damage**, including but not limited to, loss of sensitive data and
 server machine malfunction.
 
-
-
 ## Acknowledgments
 
 - Hat tip to [Billie Thompson] for the great [README template].
 
-[Billie Thompson]: https://gist.github.com/PurpleBooth
-[README template]: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
+[billie thompson]: https://gist.github.com/PurpleBooth
+[readme template]: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
