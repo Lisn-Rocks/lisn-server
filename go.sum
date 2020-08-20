@@ -1,0 +1,6 @@
+github.com/joho/godotenv v1.3.0 h1:Zjp+RcGpHhGlrMbJzXTrZZPrWj+1vfm90La1wgB6Bhc=
+github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
+github.com/lib/pq v1.8.0 h1:9xohqzkUwzR4Ga4ivdTcawVS89YSDVxXMa3xJX3cGzg=
+github.com/lib/pq v1.8.0/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
+github.com/sharpvik/mux v0.0.0-20200601214014-476806090958 h1:gdr4cSnGfNR5d77SI/VfwgTIV/YgVmO2MAr8EqInL70=
+github.com/sharpvik/mux v0.0.0-20200601214014-476806090958/go.mod h1:9IWgn8Gs4KHDbJXBJtpnXtvzKlNRBYCCXYlvk9dv3rA=

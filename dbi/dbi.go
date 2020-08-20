@@ -21,8 +21,8 @@ type DBI struct {
 func Init(logr *log.Logger) *DBI {
 	psqlInfo := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		config.DBhost, config.DBport, config.DBuser,
-		config.DBpassword, config.DBname,
+		config.Lisn.Host, config.Lisn.Port, config.Lisn.User,
+		config.Lisn.Password, config.Lisn.Name,
 	)
 
 	db, err := sql.Open("postgres", psqlInfo)

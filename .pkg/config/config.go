@@ -1,8 +1,13 @@
+// Package config provides functions to retreive appropriate info from env variables,
+// structs to store env variables values and constants that will be used during execution
 package config
 
 import (
+	"fmt"
 	"os"
 	"path"
+
+	"github.com/joho/godotenv"
 )
 
 // These are project-level constants used by various packages. They serve to
@@ -60,16 +65,45 @@ var (
 
 // The following values are used by the logger. Configure them as you please.
 
-// LogFile contains path to the log file
-var LogFile = path.Join(LogsFolder, "lisn-server.log")
+var (
+	// LogFile contains path to the log file
+	LogWriter, _ = os.Create(LogFile)
 
-// LogWriter must implement Writer and is used by the logger to know where to
-// write the logs to.
-var LogWriter, _ = os.Create(LogFile)
+	// LogWriter must implement Writer and is used by the logger to know where to
+	// write the logs to.
+	LogFile = path.Join(LogsFolder, "lisn-server.log")
+)
 
-// LogPrefix is a string used by the logger to prefix every log message.
-const LogPrefix = ""
+const (
+	// LogPrefix is a string used by the logger to prefix every log message.
+	LogPrefix = ""
+	// MaxMemUploadSize is the number of bytes that will be saved to memory from
+	// multipart upload form.
+	MaxMemUploadSize int64 = 500000000
+)
 
-// MaxMemUploadSize is the number of bytes that will be saved to memory from
-// multipart upload form.
-const MaxMemUploadSize int64 = 500000000
+// Everything related to db config
+
+// DB contains all the info required to connect to Postgre database
+type DB struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	Name     string
+}
+
+// Lisn stores a struct containing all the info about database
+var Lisn DB
+
+// Hash functions
+
+// TODO Possibly add these as env var as well
+const (
+	// Hash is a salted hash of the master password that allows to upload albums
+	// to server using the "/upload" site.
+	Hash = `averylongstringofsymbolsthatrepresentsavalidsha512hashdigestedthroughbase64encodingmustgohere`
+
+	// Salt is a salt appended to master password before hashing.
+	Salt = `anotherlongsequenceofrandomsymbolspreferrably32orlonger`
+)

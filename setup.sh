@@ -17,4 +17,5 @@ mv root ~/Public/lisn
 
 # Unpack config files. You'll have to edit these!
 cp -r .pkg/config config
+mv config/.env.example config/.env
 

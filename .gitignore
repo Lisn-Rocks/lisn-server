@@ -11,6 +11,9 @@ node_modules
 lisn-server
 pub/lisn
 
+# env file
+.env
+
 # local env files
 .env.local
 .env.*.local
