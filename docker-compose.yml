@@ -9,3 +9,12 @@ services:
         - 5432:5432
       volumes:
         - ./sql/00001-init-tables.sql:/docker-entrypoint-initdb.d/init.sql
+    server:
+        container_name: lisn_server
+        build: .
+        env_file:
+          - .env
+        ports:
+          - 8080:8080
+        depends_on: 
+          - db

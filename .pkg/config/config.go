@@ -3,11 +3,8 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"path"
-
-	"github.com/joho/godotenv"
 )
 
 // These are project-level constants used by various packages. They serve to

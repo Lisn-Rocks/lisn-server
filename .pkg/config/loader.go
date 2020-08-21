@@ -1,5 +1,12 @@
 package config
 
+import (
+	"fmt"
+	"os"
+
+	"github.com/joho/godotenv"
+)
+
 // Init fills in the structs with appropriate values
 func Init() {
 	godotenv.Load()
