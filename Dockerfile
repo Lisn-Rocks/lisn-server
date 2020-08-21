@@ -1,4 +1,4 @@
-FROM golang:latest AS go_builder
+FROM golang:latest 
 
 WORKDIR /server
 

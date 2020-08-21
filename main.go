@@ -13,9 +13,9 @@ import (
 
 func main() {
 	logr := log.New(config.LogWriter, config.LogPrefix, log.Ltime)
+	config.Init()
 	dbi := dbi.Init(logr)
 	env := router.NewEnv(logr, dbi)
-	config.Init()
 
 	server := http.Server{
 		Addr:     config.Port,
