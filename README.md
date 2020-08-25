@@ -7,44 +7,21 @@ Lisn Server allows you to manipulate database and serve files related to the
 
 ## Getting Started
 
-### Install Go
+Clone this github repo. Once done, run the `setup.sh` script.
 
-To compile from source, you need to have **Go** installed on your machine! You
-can try installing it through your package manager of choice like this:
+This will result in a few things:
 
-```bash
-# Using apt manager (Debian, Ubuntu, and related)
-apt-get install golang-go
+- A root folder will be created for all server files at `~/Public/lisn`
+  - This is the initial layout of the `~/Public/lisn` folder.
+  - The location of the files can be changed (described in )
+- Example config files will be unpacked in the repo under the `config` folder
+- An example `.env` file will be placed in the root of the repo
 
-# Using pacman manager (Arch, Manjaro and related)
-pacman -S go
+Ensure that you have these packages installed:
 
-# Using yum manager (Fedora, CentOS, and related)
-yum install golang
-```
-
-Alternatively, you can download [Go binary distributions][bin], and go through
-the [installation process][install].
-
-[bin]: https://golang.org/dl/
-[install]: https://golang.org/doc/install
-
-### Dependencies & Config Files
-
-As soon as you have **Go** installed and running on your machine, you need to do
-the following: > get rid of these dependencies and make it automatic: <19-08-20, aleksimart> >
-
-```bash
-go get github.com/lib/pq    # required to interface with PostrgreSQL
-go get github.com/sharpvik/lisn-server  # Lisn Server source files
-```
-
-This command will fetch the whole GitHub repo and put it into a specific place
-on your computer.
-
-Run the `setup.sh` script. It will create a root folder for all server files at
-`~/Public/lisn` while also unpacking all the config file templates from `.pkg`.
-This is the initial layout of the `~/Public/lisn` folder.
+- **docker** and **docker-compose**
+  - Requied to quickly set up and migrate (if needed) a database and will later on be used to ship the entire application with one command.
+- **go** (for development purposes only)
 
 > Install **ImageMagick** and make sure that it has the proper decode deligates
 > for the `.jpg` and `.png` formats (at least). The `convert` command is
@@ -65,18 +42,22 @@ This is the initial layout of the `~/Public/lisn` folder.
 
 #### Change Config
 
-In the `config` folder you'll find two files: `config.go` and `secret.go`.
-The `config.go` file contains general setup settings, while the `secret.go` file
-should contain the login details for your database.
+The container requires the following environmental variables (should be defined in .env):
 
-Both these files are merely templates, yet `config.go` is completely functional
-out of the box unless you decide to relocate or rename your `~/Public/lisn`
-folder. If that's the case, don't forget to change the `RootFolder` constant to
-reflect whatever change you've made. Same thing goes for every subfolder that
-has a mention in the `config.go` file.
+- `POSTGRES_USER`
+- `POSTGRES_PASSWORD`
+- `POSTGRES_DB`
 
-> You must change `secret.go` to match the correct login data if you want your
-> server to work.
+`config.go` has a few more constants that should be changed for security purposes:
+
+- `Hash` that is used to hash the password
+- `Salt` that is added to master password before hash
+
+The rest, such as the `RootFolder` for the location of the server files can be kept the same
+
+> `config.go` inside `config` folder and `.env` are both already functional out of the box
+> and can be used for testing purposes, but it is strongly recommended to change the variables/constants above
+> when running the service for public use
 
 Now, your **Go** server is good to go, however you still need to build the
 client side if you want to use [Lisn Web App]. Follow the link -- you'll find
@@ -92,19 +73,11 @@ service!
 
 #### Initial Setup and Migrations
 
-First of all, you need to install **PostgreSQL** database server which will
-allow you to utilize the `psql` terminal command. As soon as that's all good and
-working, head to the `sql` folder where all database migrations are stored.
+The predefined volume for empty tables is located in the `sql` directory and
+is automatically mounted when running a container. All the additions to the tables
+will not be saved unless specified so in docker-compose file
 
-```bash
-# Create empty database called 'lisn' and exit the psql console.
-psql
-create database lisn;
-\q
-
-# Apply migrations.
-./apply_all.sh lisn
-```
+**TODO**: Explain how add persistent data to the database and explain migrations
 
 #### Album Uploads
 
@@ -170,18 +143,6 @@ Now that you have your album folder ready to go, zip it without the folder
 itself (only the files go into the archive) and use `/pub/upload` site on your
 server to make Lisn process and save your music!
 
-### Run, Build or Install
-
-```bash
-cd $(go env GOPATH)/src/github.com/sharpvik/lisn-server
-
-go run      # compiles and runs without creating any binary executables
-
-go build    # puts binary file called `lisn-server` into the project folder
-
-go install  # creates binary file at $(go env GOPATH)/bin/lisn-server
-```
-
 ## Contribute
 
 All contributions to the Lisn project are greately appreciated. I know, the
@@ -190,16 +151,18 @@ phrase is a cliché but trust me, any contribution you make
 
 ### Ways To Help
 
-**Scout through the [Issues]**, look for the ones you think you can fix and
-_go ahead_.
+We are happy to hear your feedback directly or using github:
+
+1. **Scout through the [Issues]**, look for the ones you think you can fix and
+   _go ahead_.
+
+1. Found a bug? -- **create a new issue** for the rest of us to see.
+
+1. And of course, you are always welcome to `fork + git clone`, and then do
+   whatever you want. If you think that your version works better than the one we
+   have published here -- **issue a pull request**!
 
 [issues]: https://github.com/Lisn-Rocks/server/issues
-
-Found a bug? -- **create a new issue** for the rest of us to see.
-
-And of course, you are always welcome to `fork + git clone`, and then do
-whatever you want. If you think that your version works better than the one we
-have published here -- **issue a pull request**!
 
 ### Sister Repos
 
@@ -215,8 +178,10 @@ these:
 ## Authors
 
 - **[Viktor Rozenko]** - _Initial work_
+- **[Aleksei Martirosov]** - _Docker setup and bug fixes_
 
 [viktor rozenko]: https://github.com/sharpvik
+[aleksei martirosov]: https://github.com/sharpvik
 
 ## License
 
