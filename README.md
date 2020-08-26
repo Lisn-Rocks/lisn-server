@@ -7,40 +7,35 @@ Lisn Server allows you to manipulate database and serve files related to the
 
 ## Getting Started
 
-Clone this github repo. Once done, run the `setup.sh` script.
+These are the instructions for your go server to start running on you machine.
+For the client side head over to [Lisn Web App]
 
-This will result in a few things:
+[lisn web app]: https://github.com/Lisn-Rocks/web-app
 
-- A root folder will be created for all server files at `~/Public/lisn`
-  - This is the initial layout of the `~/Public/lisn` folder.
-  - The location of the files can be changed (described in )
-- Example config files will be unpacked in the repo under the `config` folder
-- An example `.env` file will be placed in the root of the repo
+### Package Requiremenets
 
-Ensure that you have these packages installed:
+`go` specifically for development purposes
 
-- **docker** and **docker-compose**
-  - Requied to quickly set up and migrate (if needed) a database and will later on be used to ship the entire application with one command.
-- **go** (for development purposes only)
+`docker` for setting up the database and for starting an entire
+application later on with one command
 
 > Install **ImageMagick** and make sure that it has the proper decode deligates
 > for the `.jpg` and `.png` formats (at least). The `convert` command is
 > essential for the server's proper functioning.
 
-#### RootFolder Tree
+### Installation
 
-```bash
-~/Public/lisn
-├── logs
-├── pub
-│   ├── fail
-│   └── upload
-└── storage
-    ├── albums
-    └── songs
-```
+After cloning this girhub repository, run the `setup.sh` script
 
-#### Change Config
+This will result in a few things:
+
+1. A root folder will be created for all server files at `~/Public/lisn`
+   - This is the initial layout of the `~/Public/lisn` folder.
+   - The location of the files can be changed (described in '[Change Config](#change-config)' section)
+1. Example config files will be unpacked in the repo under the `config` folder
+1. An example `.env` file will be placed in the root of the repo
+
+### Change Config
 
 The container requires the following environmental variables (should be defined in .env):
 
@@ -59,19 +54,7 @@ The rest, such as the `RootFolder` for the location of the server files can be k
 > and can be used for testing purposes, but it is strongly recommended to change the variables/constants above
 > when running the service for public use
 
-Now, your **Go** server is good to go, however you still need to build the
-client side if you want to use [Lisn Web App]. Follow the link -- you'll find
-all deployment instructions there.
-
-[lisn web app]: https://github.com/Lisn-Rocks/web-app
-
-### Database
-
-Lisn is a fairly young project, however, there is a mechanism in place that
-allows maintainers to quickly initialize database and upload albums into the
-service!
-
-#### Initial Setup and Migrations
+### Database Setup
 
 The predefined volume for empty tables is located in the `sql` directory and
 is automatically mounted when running a container. All the additions to the tables
@@ -145,22 +128,19 @@ server to make Lisn process and save your music!
 
 ## Contribute
 
-All contributions to the Lisn project are greately appreciated. I know, the
-phrase is a cliché but trust me, any contribution you make
-**creates a ton of difference**.
+We would love to get help from you through feedback or pull requests. Every small
+contribution will be greatly appreciated!
 
 ### Ways To Help
 
-We are happy to hear your feedback directly or using github:
+**Scout through the [Issues]**, look for the ones you think you can fix and
+_go ahead_.
 
-1. **Scout through the [Issues]**, look for the ones you think you can fix and
-   _go ahead_.
+Found a bug? -- **create a new issue** for the rest of us to see.
 
-1. Found a bug? -- **create a new issue** for the rest of us to see.
-
-1. And of course, you are always welcome to `fork + git clone`, and then do
-   whatever you want. If you think that your version works better than the one we
-   have published here -- **issue a pull request**!
+And of course, you are always welcome to `fork + git clone`, and then do
+whatever you want. If you think that your version works better than the one we
+have published here -- **issue a pull request**!
 
 [issues]: https://github.com/Lisn-Rocks/server/issues
 
@@ -200,3 +180,16 @@ server machine malfunction.
 
 [billie thompson]: https://gist.github.com/PurpleBooth
 [readme template]: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
+
+#### RootFolder Tree
+
+```bash
+~/Public/lisn
+├── logs
+├── pub
+│   ├── fail
+│   └── upload
+└── storage
+    ├── albums
+    └── songs
+```
