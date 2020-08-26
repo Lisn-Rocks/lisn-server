@@ -8,7 +8,7 @@ Lisn Server allows you to manipulate database and serve files related to the
 ## Getting Started
 
 These are the instructions for your go server to start running on you machine.
-For the client side head over to [Lisn Web App]
+For the client side head over to [Lisn Web App].
 
 [lisn web app]: https://github.com/Lisn-Rocks/web-app
 
@@ -25,7 +25,7 @@ application later on with one command
 
 ### Installation
 
-After cloning this girhub repository, run the `setup.sh` script
+After cloning this girhub repository, run the `setup.sh` script.
 
 This will result in a few things:
 
@@ -37,7 +37,8 @@ This will result in a few things:
 
 ### Change Config
 
-The container requires the following environmental variables (should be defined in .env):
+The container requires the following environmental variables
+(should be defined in .env):
 
 - `POSTGRES_USER`
 - `POSTGRES_PASSWORD`
@@ -48,21 +49,13 @@ The container requires the following environmental variables (should be defined 
 - `Hash` that is used to hash the password
 - `Salt` that is added to master password before hash
 
-The rest, such as the `RootFolder` for the location of the server files can be kept the same
+The rest, such as the `RootFolder` for the location of the server files can be kept the same.
 
 > `config.go` inside `config` folder and `.env` are both already functional out of the box
 > and can be used for testing purposes, but it is strongly recommended to change the variables/constants above
 > when running the service for public use
 
-### Database Setup
-
-The predefined volume for empty tables is located in the `sql` directory and
-is automatically mounted when running a container. All the additions to the tables
-will not be saved unless specified so in docker-compose file
-
-**TODO**: Explain how add persistent data to the database and explain migrations
-
-#### Album Uploads
+### Album Uploads
 
 At this point, all you need to do is upload some albums. It is very simple. All
 songs must be uploaded as albums to ensure clarity and consistency. One album is
@@ -126,6 +119,83 @@ Now that you have your album folder ready to go, zip it without the folder
 itself (only the files go into the archive) and use `/pub/upload` site on your
 server to make Lisn process and save your music!
 
+### Start the Server and Database
+
+Once all the config is changed, simply run:
+
+```bash
+sudo docker-compose up
+```
+
+and both the server and the database will start functioning.
+
+## Development Information
+
+If you want to add features or test the current ones to our server, this section
+wil explain some of the aspects you may want to know.
+
+#### RootFolder Initial Tree
+
+```bash
+~/Public/lisn
+├── logs
+├── pub
+│   ├── fail
+│   └── upload
+└── storage
+    ├── albums
+    └── songs
+```
+
+### Database Setup
+
+To only setup the database, run:
+
+```bash
+sudo docker-compose up db
+```
+
+After the first time, a container with the predefined tables will be created for you,
+where you can enter the relevant data.
+
+To stop the database, run:
+
+```bash
+sudo docker-compose down
+```
+
+> Note that all the data you have entered in the databases will be saved.
+
+If you want to delete the entries in the database, run:
+
+```bash
+sudo docker-compose down --volumes
+```
+
+You will still have the schemas for the tables in the fresh database the next time you
+will start the database.
+
+### Running the Server
+
+```bash
+go run main.go
+```
+
+Please make sure to run:
+
+```bash
+sudo docker-compose build
+```
+
+afterwards to rebuild the `go` image for the container, in case
+you will want to run the whole thing together again.
+
+### Migrating the database
+
+If you need the entries that were previously entered in the database,
+make sure to retreive the `db_data` volume created by your docker upon execution
+and mount it accordingly in `docker-compose.yaml`.
+
 ## Contribute
 
 We would love to get help from you through feedback or pull requests. Every small
@@ -139,7 +209,9 @@ _go ahead_.
 Found a bug? -- **create a new issue** for the rest of us to see.
 
 And of course, you are always welcome to `fork + git clone`, and then do
-whatever you want. If you think that your version works better than the one we
+whatever you want (use of [Development Information](#development-information) is still
+**highly recommended**).
+If you think that your version works better than the one we
 have published here -- **issue a pull request**!
 
 [issues]: https://github.com/Lisn-Rocks/server/issues
@@ -161,7 +233,7 @@ these:
 - **[Aleksei Martirosov]** - _Docker setup and bug fixes_
 
 [viktor rozenko]: https://github.com/sharpvik
-[aleksei martirosov]: https://github.com/sharpvik
+[aleksei martirosov]: https://github.com/aleksimart
 
 ## License
 
@@ -180,16 +252,3 @@ server machine malfunction.
 
 [billie thompson]: https://gist.github.com/PurpleBooth
 [readme template]: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
-
-#### RootFolder Tree
-
-```bash
-~/Public/lisn
-├── logs
-├── pub
-│   ├── fail
-│   └── upload
-└── storage
-    ├── albums
-    └── songs
-```
