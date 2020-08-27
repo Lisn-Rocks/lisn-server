@@ -121,7 +121,7 @@ server to make Lisn process and save your music!
 
 ### Start the Server and Database
 
-Once all the config is changed, simply run:
+Once all the config is changed and you've added a few albums, simply run:
 
 ```bash
 sudo docker-compose up
@@ -194,7 +194,14 @@ you will want to run the whole thing together again.
 
 If you need the entries that were previously entered in the database,
 make sure to retreive the `db_data` volume created by your docker upon execution
-and mount it accordingly in `docker-compose.yaml`.
+and mount it accordingly in `docker-compose.yaml` upon migration.
+
+## Known Bugs and TODO's
+
+- [ ] Log file is not actually created
+- [ ] Make a defer function that will display the log upon finishing the execution
+- [ ] Improve the server structure
+- [ ] Find another way for user to change the hash and salt
 
 ## Contribute
 
