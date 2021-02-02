@@ -1,27 +1,30 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 
-	_ "github.com/lib/pq"
-
-	"github.com/sharpvik/lisn-server/config"
-	"github.com/sharpvik/lisn-server/dbi"
-	"github.com/sharpvik/lisn-server/router"
+	"github.com/sharpvik/log-go"
 )
 
-func main() {
-	logr := log.New(config.LogWriter, config.LogPrefix, log.Ltime)
-	dbi := dbi.Init(logr)
-	env := router.NewEnv(logr, dbi)
+const port = ":8080"
 
+func init() {
+	log.SetLevel(log.LevelDebug)
+}
+
+func main() {
 	server := http.Server{
-		Addr:     config.Port,
-		Handler:  router.Init(env),
-		ErrorLog: logr,
+		Addr:     port,
+		Handler:  &handler{},
 	}
 
-	logr.Printf("serving at port %s", config.Port)
-	logr.Fatalln(server.ListenAndServe())
+	log.Debug("serving at port %s", port)
+	log.Fatal(server.ListenAndServe().Error())
+}
+
+type handler struct {}
+
+func (*handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "ALL GOOD")
 }
